@@ -1,4 +1,5 @@
-
+import Box_Collection
+import Line_Following
 
 
 connections = {
@@ -101,13 +102,13 @@ MEDIUM = 40
 STEP_FWD = 40
 
 def fwd_until_junc():
-    pass
+    Line_Following.line_following(pickup=False, dropoff=False)
 
 def clockwise():
-    pass
+    Line_Following.turn_clockwise()
 
 def anticlockwise():
-    pass
+    Line_Following.turn_anticlockwise()
 
 def load_fork():
     pass
@@ -115,14 +116,11 @@ def load_fork():
 def unload_fork():
     pass
 
-def light_readings():
-    pass
-
 def fwd_until_black():
-    pass
+    Line_Following.line_following(pickup=False, dropoff=True)
 
 def fwd_until_box():
-    pass
+    Line_Following.line_following(pickup=True, dropoff=False)
 
 def fwd(distance):
     pass

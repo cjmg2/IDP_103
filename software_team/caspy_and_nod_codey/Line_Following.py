@@ -1,6 +1,7 @@
 from machine import Pin, PWM
 import time
 import Box_Collection as bc
+import Global_Variables as gv
 
 def get_measurement_list():
     """"This function returns a list of light sensor reading"""
@@ -49,16 +50,16 @@ def motor_control(control_signal):
 
     k = 8
     if control_signal < 0:
-        lmotor.Forward(k*control_signal)
-        rmotor.Forward(100 - k*control_signal)
+        gv.lmotor.Forward(k*control_signal)
+        gv.rmotor.Forward(100 - k*control_signal)
 
     elif control_signal > 0:
-        rmotor.Forward(k*control_signal)
-        lmotor.Forward(100 - k*control_signal)
+        gv.rmotor.Forward(k*control_signal)
+        gv.lmotor.Forward(100 - k*control_signal)
 
     else:
-        rmotor.Forward()
-        lmotor.Forward()
+        gv.rmotor.Forward()
+        gv.lmotor.Forward()
 
 def detect_L_turn(measurement_list):
     """"This function detects if there is a left turn"""
@@ -133,15 +134,31 @@ def line_following(pickup = False, dropoff = False):
 def turn_clockwise():
     """"This function turns the robot 90 degrees clockwise"""
 
-    rmotor.stop()
-    lmotor.forward()
+    gv.rmotor.stop()
+    gv.lmotor.forward()
     time.sleep(1)
-    lmotor.stop()
+    gv.lmotor.stop()
 
 def turn_anticlockwise():
     """"This function turns the robot 90 degrees anticlockwise"""
 
-    rmotor.forward()
-    lmotor.stop()
+    gv.rmotor.forward()
+    gv.lmotor.stop()
     time.sleep(1)
-    rmotor.stop()
+    gv.rmotor.stop()
+
+def blind_forward(distance_wanted):
+    """This function makes the robot move forwards a certain distance without taking into account the light sensors"""
+    gv.rmotor.forward()
+    gv.lmotor.forward()
+    time.sleep(distance_wanted)
+    gv.rmotor.stop()
+    gv.lmotor.stop()
+
+def blind_reverse(distance_wanted):
+    """This function makes the robot move forwards a certain distance without taking into account the light sensors"""
+    gv.rmotor.Reverse()
+    gv.lmotor.Reverse()
+    time.sleep(distance_wanted)
+    gv.rmotor.stop()
+    gv.lmotor.stop()
