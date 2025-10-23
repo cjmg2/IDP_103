@@ -1,4 +1,4 @@
-import software_team.PID.line_following_functions as lff
+import software_team.PID_test.line_following_functions as lff
 
 def line_following(error, prev_error, prev_integrator, prev_differentiator, Kp=1, Ki=0, Kd=0.5, tau=0.1, T=0.01):
     #returns control signal, integrator and differentiator
