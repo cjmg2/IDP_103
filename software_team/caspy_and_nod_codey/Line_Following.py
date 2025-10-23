@@ -101,6 +101,7 @@ def line_following(pickup = False, dropoff = False):
     prev_integrator = 0
     prev_differentiator = 0
     control_signal = 0
+    qr_code_detected = False
 
     while state == "not at junction":
 
@@ -121,7 +122,13 @@ def line_following(pickup = False, dropoff = False):
             detect_dropoff(measurement_list)
         
         if pickup == True:
+            if qr_code_detected == False:
+                qr_code = bc.get_qr_code()
+                if qr_code is not None:
+                    qr_code_detected = True
             bc.detect_box()
+    if pickup == True:
+        return qr_code
 
 def turn_clockwise():
     """"This function turns the robot 90 degrees clockwise"""
