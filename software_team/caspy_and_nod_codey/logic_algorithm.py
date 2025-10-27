@@ -123,7 +123,7 @@ def fwd_until_box():
     Line_Following.line_following(pickup=True, dropoff=False)
 
 def fwd(distance):
-    pass
+    Line_Following.blind_forward(distance_wanted = distance)
 
 def is_RHS_lidar_pos():
     pass
@@ -132,7 +132,7 @@ def is_LHS_lidar_pos():
     pass
 
 def rvs(distance):
-    pass
+    Line_Following.blind_reverse(distance_wanted = distance)
 
 def read_qr():
     return "U_orange", 3
