@@ -111,10 +111,13 @@ def anticlockwise():
     Line_Following.turn_anticlockwise()
 
 def load_fork():
-    pass
+    Box_Collection.lift_block()
 
 def unload_fork():
-    pass
+    if state.destination == "U_orange" or state.destination == "U_purple":
+        Box_Collection.lower_to_ground()
+    elif state.destination == "L_orange" or state.destination == "L_purple":
+        Box_Collection.lower_onto_rack()
 
 def fwd_until_black():
     Line_Following.line_following(pickup=False, dropoff=True)
@@ -135,7 +138,25 @@ def rvs(distance):
     Line_Following.blind_reverse(distance_wanted = distance)
 
 def read_qr():
-    return "U_orange", 3
+    text = Box_Collection.get_qr_code()
+
+    translator = {
+        "A": "orange",
+        "B": "purple",
+        "upper": "U",
+        "lower": "L"
+    }
+
+    # Split the string by commas and strip any extra spaces
+    parts = [part.strip() for part in text.split(',')]
+
+    # Extract the required parts
+    rack = parts[0].split()[1]
+    level = parts[1]
+    position = parts[2]
+
+    destination = translator[level.lower()] + "_" + translator[rack.upper()]
+    return destination, int(position)
 
 def count_unload_return():
     """
@@ -163,7 +184,7 @@ def execute_travel(route):
     while route:
         current_node = next_node
         next_node = route.pop(0)
-        print(current_node, next_node)
+        # print(current_node, next_node)
         wanted_orien = connections[current_node][next_node]
         #clockwise is positive
         turn_angle = wanted_orien - state.orien
@@ -184,7 +205,7 @@ def execute_travel(route):
         fwd_until_junc()
         state.loc = next_node
         print(turn_angle)
-    print("\n\n\n\n")
+    # print("\n\n\n\n")
     return output
 
 def return_to_color(path_fwd):
@@ -332,7 +353,7 @@ def main():
     Runs the entire program, telling the robot to do phase 1 (boxes in all 4 bays)
     then phase 2 (boxes only added one by one to a random loading bay)
     """
-    
+    Box_Collection.initalise_servo()
     for q in range(4):
         if q == 0:
             start_at_yellow()
