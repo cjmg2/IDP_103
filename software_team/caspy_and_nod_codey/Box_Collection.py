@@ -1,47 +1,58 @@
 from machine import Pin, PWM, SoftI2C, I2C
 from utime import sleep
+import Global_Variables as gv
 
 from libs.DFRobot_TMF8x01 import DFRobot_TMF8801, DFRobot_TMF8701
 from libs.tiny_code_reader.tiny_code_reader import TinyCodeReader
 
-#find pin
-pwm_pin_no = 28  # Pin 28 = GP28 (labelled 34 on the jumper), replace with correct pin
-pwm_pin = PWM(Pin(pwm_pin_no), 100)
+def initalise_servo():
+    """This function initialises the servo motor"""
+    gv.level = 0 #or a different level if this is too low for the forks to insert into the pallet
+    
+    #select pin
+    pwm_pin_no = 28  # Pin 28 = GP28 (labelled 34 on the jumper), replace with correct pin
+    gv.servo_pin = PWM(Pin(pwm_pin_no), 100)
 
-def lift():
-    """This function lifts block 20mm off the ground"""
-    while level<"""angle corresponding with displacement of 20mm""":
+    #level-to-height ratio is 0.8836
+
+    #the initial level should be added to the other levels if it is not zero
+    u16_level = int(65535 * gv.level / 100)
+    gv.servo_pin.duty_u16(u16_level)
+
+def lift_block():
+    """lifts block 20mm off the ground"""
+    while gv.level<23: #or 34, if the block can be raised to 30mm right away
         direction=1
-        u16_level = int(65535 * level / 100)
-        pwm_pin.duty_u16(u16_level)
-    sleep(0.1)
+        gv.level += direction
+        u16_level = int(65535 * gv.level / 100)
+        gv.servo_pin.duty_u16(u16_level)
    
-def raise_to_rack():
-    """This function raises block to the height of the unloading rack"""
-    while level<"""angle corresponding with displacement of 30mm""":
+def raise_to_rack(): #this is not needed if the block can be raised to 30mm right away
+    """raises block to the height of the unloading rack"""
+    while gv.level<34:
         direction=1
-        u16_level = int(65535 * level / 100)
-        pwm_pin.duty_u16(u16_level)
-    sleep(0.1)
+        gv.level += direction
+        u16_level = int(65535 * gv.level / 100)
+        gv.servo_pin.duty_u16(u16_level)
 
-def lower():
-    """This function lowers block onto rack"""
-    while level>"""angle corresponding to displacement of 26mm""":
+def lower_onto_rack():
+    """lowers block onto rack"""
+    while gv.level>28:
         direction=-1
-        u16_level = int(65535 * level / 100)
-        pwm_pin.duty_u16(u16_level)
-    sleep(0.1)
+        gv.level += direction
+        u16_level = int(65535 * gv.level / 100)
+        gv.servo_pin.duty_u16(u16_level)
 
 def lower_to_ground():
-    """This function lowers forks back to 0 displacement after a block has been placed"""
-    while level>0:
+    """lowers forks back to 0 displacement after a block has been placed"""
+    while gv.level>0:
         direction=-1
-        u16_level = int(65535 * level / 100)
-        pwm_pin.duty_u16(u16_level)
-    sleep(0.1)
+        gv.level += direction
+        u16_level = int(65535 * gv.level / 100)
+        gv.servo_pin.duty_u16(u16_level)
 
 def get_f_distance():
-
+    """This function returns the forward distance"""
     i2c_bus = I2C(id=0, sda=Pin(8), scl=Pin(9), freq=100000)
     tof = DFRobot_TMF8701(i2c_bus=i2c_bus)
 
@@ -74,7 +85,7 @@ def get_qr_code():
 
 def get_s_distance():
     """This function returns the side distance using TMF8801"""
-    counter = 0
+#    counter = 0
 
     i2c_bus = I2C(id=0, sda=Pin(8), scl=Pin(9), freq=100000)
     tof = DFRobot_TMF8801(i2c_bus=i2c_bus)
