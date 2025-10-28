@@ -5,19 +5,19 @@ import Global_Variables as gv
 from libs.DFRobot_TMF8x01 import DFRobot_TMF8801, DFRobot_TMF8701
 from libs.tiny_code_reader.tiny_code_reader import TinyCodeReader
 
-def initalise_servo():
-    """This function initialises the servo motor"""
-    gv.level = 0 #or a different level if this is too low for the forks to insert into the pallet
+#def initalise_servo():
+#    """This function initialises the servo motor"""
+#    gv.level = 0 #or a different level if this is too low for the forks to insert into the pallet
     
     #select pin
-    pwm_pin_no = 28  # Pin 28 = GP28 (labelled 34 on the jumper), replace with correct pin
-    gv.servo_pin = PWM(Pin(pwm_pin_no), 100)
+#    pwm_pin_no = 28  # Pin 28 = GP28 (labelled 34 on the jumper), replace with correct pin
+#    gv.servo_pin = PWM(Pin(pwm_pin_no), 100)
 
     #level-to-height ratio is 0.8836
 
     #the initial level should be added to the other levels if it is not zero
-    u16_level = int(65535 * gv.level / 100)
-    gv.servo_pin.duty_u16(u16_level)
+#    u16_level = int(65535 * gv.level / 100)
+#    gv.servo_pin.duty_u16(u16_level)
 
 def lift_block():
     """lifts block 20mm off the ground"""
