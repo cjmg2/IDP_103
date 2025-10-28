@@ -5,13 +5,8 @@ import Global_Variables as gv
 
 def get_measurement_list():
     """"This function returns a list of light sensor reading"""
-
-    FL = Pin(18, Pin.IN, Pin.PULL_DOWN)
-    L = Pin(19, Pin.IN, Pin.PULL_DOWN)
-    R = Pin(17, Pin.IN, Pin.PULL_DOWN)
-    FR = Pin(16, Pin.IN, Pin.PULL_DOWN)
     
-    return [FL.value(), L.value(), R.value(), FR.value()] # LOW = white HIGH = Black
+    return [gv.FL.value(), gv.L.value(), gv.R.value(), gv.FR.value()] # LOW = white HIGH = Black
 
 def weight_measurement_list(measurement_list):
     """This function gives weights to a list of measurements equal to the sensor distances from the centre"""

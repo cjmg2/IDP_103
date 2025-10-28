@@ -1,6 +1,9 @@
 import Box_Collection
 import Line_Following
 
+SMALL = 10
+MEDIUM = 40
+STEP_FWD = 40
 
 connections = {
     "Home": {"Yellow": 270, "Green": 90},
@@ -97,9 +100,7 @@ def path_find(start, dest):
         raise Exception("error 1, elifs ran out")
     
 
-SMALL = 10
-MEDIUM = 40
-STEP_FWD = 40
+
 
 def fwd_until_junc():
     Line_Following.line_following(pickup=False, dropoff=False)
