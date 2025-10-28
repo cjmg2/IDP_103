@@ -83,18 +83,18 @@ def get_qr_code():
     code = tiny_code_reader.poll()
     return code
 
-def get_s_distance():
+#def get_s_distance():
     """This function returns the side distance using TMF8801"""
 #    counter = 0
 
-    i2c_bus = I2C(id=0, sda=Pin(8), scl=Pin(9), freq=100000)
-    tof = DFRobot_TMF8801(i2c_bus=i2c_bus)
+#    i2c_bus = I2C(id=0, sda=Pin(8), scl=Pin(9), freq=100000)
+#    tof = DFRobot_TMF8801(i2c_bus=i2c_bus)
 #    while(tof.begin() != 0):
 #      counter += 1
 #      if counter > 100:
 #          break
 #      sleep(0.5)
-    tof.start_measurement(calib_m = tof.eMODE_NO_CALIB)
+#    tof.start_measurement(calib_m = tof.eMODE_NO_CALIB)
   
 #   while True:
 #     if(tof.is_data_ready() == True):
@@ -102,6 +102,6 @@ def get_s_distance():
 #     counter += 1
 #      if counter > 100:
 #        break
-    return tof.get_distance_mm()
+#    return tof.get_distance_mm()
 
 #def findbox():
