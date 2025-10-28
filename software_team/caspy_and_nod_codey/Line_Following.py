@@ -81,18 +81,18 @@ def detect_dropoff(measurement_list):
     if measurement_list == [0, 0, 0, 0]:
         return "at junction"
 
-def detect_T_junction(measurement_list):
-    """"This function detects if there is a T junction"""
-
-    if measurement_list == [1, 1, 1, 1]:
-        return "at junction"
+#def detect_T_junction(measurement_list):             ### I believe this function is redundant due to detect_R_turn & detect_L_Turn
+#    """"This function detects if there is a T junction"""
+#
+#    if measurement_list == [1, 1, 1, 1]:
+#        return "at junction"
 
 def detect_junction(measurement_list):
-    """"This function detects any junction excluding pickup"""
+    """"This function detects any junction excluding dropoff"""
 
     detect_L_turn(measurement_list)
     detect_R_turn(measurement_list)
-    detect_T_junction(measurement_list)
+    #detect_T_junction(measurement_list) ### I believe this function is redundant due to detect_R_turn & detect_L_Turn
 
 def line_following(pickup = False, dropoff = False):
     """This function follows a line until a junction is detected"""
@@ -135,17 +135,23 @@ def turn_clockwise():
     """"This function turns the robot 90 degrees clockwise"""
 
     gv.rmotor.stop()
-    gv.lmotor.forward()
+    gv.lmotor.stop()
+    gv.rmotor.reverse(30)
+    gv.lmotor.forward(30)
     time.sleep(1)
+    gv.rmotor.stop()
     gv.lmotor.stop()
 
 def turn_anticlockwise():
     """"This function turns the robot 90 degrees anticlockwise"""
 
-    gv.rmotor.forward()
+    gv.rmotor.stop()
     gv.lmotor.stop()
+    gv.rmotor.forward(30)
+    gv.lmotor.reverse(30)
     time.sleep(1)
     gv.rmotor.stop()
+    gv.lmotor.stop()
 
 def blind_forward(distance_wanted):
     """This function makes the robot move forwards a certain distance without taking into account the light sensors"""

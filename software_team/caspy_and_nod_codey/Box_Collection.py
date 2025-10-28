@@ -56,19 +56,19 @@ def get_f_distance():
     i2c_bus = I2C(id=0, sda=Pin(8), scl=Pin(9), freq=100000)
     tof = DFRobot_TMF8701(i2c_bus=i2c_bus)
 
-#    while(tof.begin() != 0):
-#      counter += 1
-#      if counter > 100:
-#          break
-#      sleep(0.5)
+    while(tof.begin() != 0):
+      counter += 1
+      if counter > 100:
+          break
+      sleep(0.5)
     tof.start_measurement(calib_m = tof.eMODE_NO_CALIB, mode = tof.eCOMBINE)
     
-    #   while True:
-#     if(tof.is_data_ready() == True):
-#       return tof.get_distance_mm()
-#     counter += 1
-#      if counter > 100:
-#        break
+    while True:
+        if(tof.is_data_ready() == True):
+            return tof.get_distance_mm()
+        counter += 1
+        if counter > 100:
+            break
     return tof.get_distance_mm()
 
 def detect_box():
