@@ -1,8 +1,10 @@
 import Box_Collection
 import Line_Following
 
-SMALL = 10
-MEDIUM = 40
+#to fix = TO_QR< make it fixed, and also step fwd, try to integrate a mixture of junction and also blind forward so its more foolproof
+SMALL = 5/20
+OUT_OF_HOME = 20/20
+OUT_OF_BAY = 10/20
 STEP_FWD = 40
 
 connections = {
@@ -256,10 +258,10 @@ def go_in_for_the_box_readqr():
     """
     with the bot facing the box, go straight in for the box, scan the qr code, lift the box, and move back to initial position
     """
+    destination, bay = read_qr()
     fwd(SMALL)
     fwd_until_junc()
     fwd_until_box()
-    destination, bay = read_qr()
     load_fork()
     if state.loc == "Red" or state.loc == "Yellow":
         clockwise()
@@ -321,7 +323,7 @@ def turn_unload_return(bay):
     fwd_until_black()
     unload_fork()
 
-    rvs(MEDIUM)
+    rvs(OUT_OF_BAY)
     clockwise()
     clockwise()
     fwd_until_junc()
@@ -332,7 +334,10 @@ def turn_unload_return(bay):
     else:
         raise Exception("error 3, elifs ran out")
     state.orien = 0
-    fwd(bay*STEP_FWD)
+    if bay != 1:
+        for i in range(bay-1):
+            fwd_until_junc()
+    fwd(SMALL)
     #this is a very fragile part of the code, the bot has to turn quite accurately
 
 def start_at_yellow():
@@ -340,7 +345,7 @@ def start_at_yellow():
     Instructs the robot to move from home to yellow, the first loading bay
     """
 
-    fwd(MEDIUM)
+    fwd(OUT_OF_HOME)
     fwd_until_junc()
     clockwise()
     fwd_until_junc()
