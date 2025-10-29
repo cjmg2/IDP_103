@@ -120,7 +120,7 @@ def line_following(pickup = False, dropoff = False):
 
         motor_control(measurement_list)
         detect_R_turn(measurement_list)
-        detect_L_turn(measurement_list)
+        detect_L_turn(measurement_list) # Do not need a detect T junction
 
         if dropoff == True:
             detect_dropoff(measurement_list)
