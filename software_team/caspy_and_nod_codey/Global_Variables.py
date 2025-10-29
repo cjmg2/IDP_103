@@ -2,16 +2,16 @@ from Classes import Motor
 from machine import Pin, PWM
 
 global rmotor 
-rmotor = Motor(4, 5)
+rmotor = Motor(7, 6)
 
 global lmotor 
-lmotor = Motor(7, 6)
+lmotor = Motor(4, 5)
 
 global level
 level = 0
 
 #global servo_pin
-#servo_pin = PWM(Pin(28), 100)
+#servo_pin = PWM(Pin(15), 100)
 #adc=ADC(Pin("""pin no.""")) #replace with pin connected to the servo's analogue output wire
 
 global FL

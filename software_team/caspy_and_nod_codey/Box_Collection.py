@@ -1,27 +1,31 @@
 from machine import Pin, PWM, SoftI2C, I2C
 from utime import sleep
 import Global_Variables as gv
-
-from libs.DFRobot_TMF8x01 import DFRobot_TMF8801, DFRobot_TMF8701
 from libs.tiny_code_reader.tiny_code_reader import TinyCodeReader
-
-
-
     
 
-def get_servo_angle():
-   """reads the analogue feedback of the servo to get the current angle"""
+"""def get_servo_angle():
+   """"""reads the analogue feedback of the servo to get the current angle""""""
    angle=gv.adc.read_u16()*0.47-33.4 #this is the function on the servo documentation to get the angle from the analogue output
-   return angle
+   return angle"""
 
-def change_height(desired_height):
-   """changes the angle of the servo to that which corresponds to the desired height of the rack"""
-   desired_angle=desired_height/0.3272 #this constant is the ratio between the rack height and angular displacement
-   angle=get_servo_angle()
-   u16_level = int(round(65535 * desired_angle / 270)) #this causes the servo to start turning towards the required angle
-   gv.servo_pin_pin.duty_u16(u16_level)
-   while angle>(desired_angle+1.5) or angle<(desired_angle-1.5):  #this loop waits for the servo to reach the desired angle, within a tolerance 
-       angle=get_servo_angle()
+def change_height(target_level, current_level):
+    led_pin = 15  # Pin 28 = GP28 (labelled 34 on the jumper)
+    led_PWM = PWM(Pin(15), 100)
+
+    if target_level > current_level:
+        direction = 1
+    if target_level < current_level:
+        direction = -1
+    while current_level != target_level:
+        
+        u16_level = int(65535 * current_level / 100)
+        led_PWM.duty_u16(u16_level)
+    
+        #update level and sleep
+        print(f"Level={current_level}, u16_level={u16_level}, direction={direction}")
+        current_level += direction
+        sleep(0.1)
 
 def initialise_servo():
     change_height(0)
