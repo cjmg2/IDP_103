@@ -9,30 +9,30 @@ from libs.tiny_code_reader.tiny_code_reader import TinyCodeReader
 
     
 
-#def get_servo_angle():
-#    """reads the analogue feedback of the servo to get the current angle"""
-#    angle=gv.adc.read_u16()*0.47-33.4 #this is the function on the servo documentation to get the angle from the analogue output
-#    return angle
+def get_servo_angle():
+   """reads the analogue feedback of the servo to get the current angle"""
+   angle=gv.adc.read_u16()*0.47-33.4 #this is the function on the servo documentation to get the angle from the analogue output
+   return angle
 
-#def change_height(desired_height):
-#    """changes the angle of the servo to that which corresponds to the desired height of the rack"""
-#    desired_angle=desired_height/0.3272 #this constant is the ratio between the rack height and angular displacement
-#    angle=get_servo_angle()
-#    u16_level = int(round(65535 * desired_angle / 270)) #this causes the servo to start turning towards the required angle
-#    gv.servo_pin_pin.duty_u16(u16_level)
-#    while angle>(desired_angle+1.5) or angle<(desired_angle-1.5):  #this loop waits for the servo to reach the desired angle, within a tolerance 
-#        angle=get_servo_angle()
+def change_height(desired_height):
+   """changes the angle of the servo to that which corresponds to the desired height of the rack"""
+   desired_angle=desired_height/0.3272 #this constant is the ratio between the rack height and angular displacement
+   angle=get_servo_angle()
+   u16_level = int(round(65535 * desired_angle / 270)) #this causes the servo to start turning towards the required angle
+   gv.servo_pin_pin.duty_u16(u16_level)
+   while angle>(desired_angle+1.5) or angle<(desired_angle-1.5):  #this loop waits for the servo to reach the desired angle, within a tolerance 
+       angle=get_servo_angle()
 
 def initialise_servo():
-    pass
+    change_height(0)
 def lower_to_ground():
-    pass
+    change_height(0)
 def lower_onto_rack():
-    pass
+    change_height(30)
 def raise_to_rack():
-    pass
+    change_height(30)
 def lift_block():
-    pass
+    change_height(40)
 
 
 
