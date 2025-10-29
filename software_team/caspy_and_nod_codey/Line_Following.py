@@ -55,18 +55,36 @@ def motor_control(measurement_list):
     #else:
     #    gv.rmotor.Forward()
     #    gv.lmotor.Forward()
+    if measurement_list == [0, 1, 1, 0]:
+        gv.rmotor.Forward(100)
+        gv.lmotor.Forward(100)
+        return "not at junction"
     if measurement_list == [1, 0, 0, 0]:
-        gv.rmotor.Forward(75)
+        gv.rmotor.Forward(100)
         gv.lmotor.Forward(50)
+        return "not at junction"
     if measurement_list == [0, 1, 0, 0]:
         gv.rmotor.Forward(100)
         gv.lmotor.Forward(75)
+        return "not at junction"
     if measurement_list == [0, 0, 1, 0]:
         gv.rmotor.Forward(75)
         gv.lmotor.Forward(100)
+        return "not at junction"
     if measurement_list == [0, 0, 0, 1]:
         gv.rmotor.Forward(50)
-        gv.lmotor.Forward(75)
+        gv.lmotor.Forward(100)
+        return "not at junction"
+    if measurement_list == [0, 0, 1, 1] or measurement_list == [0, 1, 1, 1] or measurement_list == [1, 1, 1, 1]:
+        gv.rmotor.off()
+        gv.lmotor.off()
+        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        return "at junction"
+    if measurement_list == [1, 1, 0, 0] or measurement_list == [1, 1, 1, 0] or measurement_list == [1, 1, 1, 1]:
+        gv.rmotor.off()
+        gv.lmotor.off()
+        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        return "at junction"
     else:
         pass
 
@@ -107,7 +125,6 @@ def line_following(pickup = False, dropoff = False):
     qr_code_detected = False
 
     while state == "not at junction":
-
         measurement_list = get_measurement_list()
         #weighted_measurement_list = weight_measurement_list(measurement_list)
         #error = calc_error(weighted_measurement_list)
@@ -118,9 +135,11 @@ def line_following(pickup = False, dropoff = False):
         #prev_integrator = results[1]
         #prev_differentiator = results[2]
 
-        motor_control(measurement_list)
-        detect_R_turn(measurement_list)
-        detect_L_turn(measurement_list) # Do not need a detect T junction
+        state = motor_control(measurement_list)
+        #detect_R_turn(measurement_list)
+        #detect_L_turn(measurement_list) # Do not need a detect T junction
+        print(state)
+        time.sleep(0.1)
 
         if dropoff == True:
             detect_dropoff(measurement_list)
@@ -137,37 +156,37 @@ def line_following(pickup = False, dropoff = False):
 def turn_clockwise():
     """"This function turns the robot 90 degrees clockwise"""
 
-    gv.rmotor.stop()
-    gv.lmotor.stop()
-    gv.rmotor.reverse(30)
-    gv.lmotor.forward(30)
-    time.sleep(1)
-    gv.rmotor.stop()
-    gv.lmotor.stop()
+    gv.rmotor.off()
+    gv.lmotor.off()
+    gv.rmotor.Reverse(100)
+    gv.lmotor.Forward(100)
+    time.sleep(0.7)
+    gv.rmotor.off()
+    gv.lmotor.off()
 
 def turn_anticlockwise():
     """"This function turns the robot 90 degrees anticlockwise"""
 
-    gv.rmotor.stop()
-    gv.lmotor.stop()
-    gv.rmotor.forward(30)
-    gv.lmotor.reverse(30)
-    time.sleep(1)
-    gv.rmotor.stop()
-    gv.lmotor.stop()
+    gv.rmotor.off()
+    gv.lmotor.off()
+    gv.rmotor.Forward(100)
+    gv.lmotor.Reverse(100)
+    time.sleep(0.7)
+    gv.rmotor.off()
+    gv.lmotor.off()
 
 def blind_forward(distance_wanted):
     """This function makes the robot move forwards a certain distance without taking into account the light sensors"""
-    gv.rmotor.forward()
-    gv.lmotor.forward()
-    time.sleep(distance_wanted)
-    gv.rmotor.stop()
-    gv.lmotor.stop()
+    gv.rmotor.Forward(100)
+    gv.lmotor.Forward(100)
+    time.sleep(distance_wanted) #1cm goes to 18cm
+    gv.rmotor.off()
+    gv.lmotor.off()
 
 def blind_reverse(distance_wanted):
     """This function makes the robot move forwards a certain distance without taking into account the light sensors"""
-    gv.rmotor.Reverse()
-    gv.lmotor.Reverse()
-    time.sleep(distance_wanted)
-    gv.rmotor.stop()
-    gv.lmotor.stop()
+    gv.rmotor.Reverse(100)
+    gv.lmotor.Reverse(100)
+    time.sleep(distance_wanted) # 1s goes to 18cm
+    gv.rmotor.off()
+    gv.lmotor.off()

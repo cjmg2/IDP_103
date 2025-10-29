@@ -2,10 +2,10 @@ from Classes import Motor
 from machine import Pin, PWM
 
 global rmotor 
-rmotor = Motor(4, 5)
+rmotor = Motor(7, 6)
 
 global lmotor 
-lmotor = Motor(7, 6)
+lmotor = Motor(4, 5)
 
 global level
 level = 0
