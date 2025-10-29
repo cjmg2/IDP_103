@@ -8765,7 +8765,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ed485be2-c032-4c97-8afa-9ac8d2d794bb")
-		(property "Reference" "U1"
+		(property "Reference" "IC1"
 			(at 75.565 160.02 0)
 			(effects
 				(font
@@ -8853,7 +8853,7 @@
 		(instances
 			(project ""
 				(path "/c2e13abb-d55e-494f-892f-f4034ec589d2"
-					(reference "U1")
+					(reference "IC1")
 					(unit 1)
 				)
 			)
