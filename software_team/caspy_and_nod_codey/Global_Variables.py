@@ -10,15 +10,15 @@ lmotor = Motor(7, 6)
 global level
 level = 0
 
-global servo_pin
-servo_pin = PWM(Pin(28), 100)
-adc=ADC(Pin("""pin no.""")) #replace with pin connected to the servo's analogue output wire
+#global servo_pin
+#servo_pin = PWM(Pin(28), 100)
+#adc=ADC(Pin("""pin no.""")) #replace with pin connected to the servo's analogue output wire
 
 global FL
-FL = Pin(18, Pin.IN, Pin.PULL_DOWN)
+FL = Pin(19, Pin.IN, Pin.PULL_DOWN)
 global L
-L = Pin(19, Pin.IN, Pin.PULL_DOWN)
+L = Pin(20, Pin.IN, Pin.PULL_DOWN)
 global R
-R = Pin(20, Pin.IN, Pin.PULL_DOWN)
+R = Pin(21, Pin.IN, Pin.PULL_DOWN)
 global FR
-FR = Pin(21, Pin.IN, Pin.PULL_DOWN)
+FR = Pin(18, Pin.IN, Pin.PULL_DOWN)

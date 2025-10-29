@@ -11,7 +11,7 @@ def get_measurement_list():
 def weight_measurement_list(measurement_list):
     """This function gives weights to a list of measurements equal to the sensor distances from the centre"""
 
-    return [measurement_list[0] * -2, measurement_list[1] * -1, measurement_list[2] * 1, measurement_list[3] * 2] #update with weigtings equal to the distance of each sensor from the centre
+    return [measurement_list[0] * -3.5, measurement_list[1] * -0.8, measurement_list[2] * 0.8, measurement_list[3] * 3.5] #update with weigtings equal to the distance of each sensor from the centre
 
 
 def calc_error(weighted_measurement_list, setpoint=0):
@@ -26,7 +26,7 @@ def calc_error(weighted_measurement_list, setpoint=0):
     measurement = temp / counter
     return measurement - setpoint
 
-def calc_control_signal(error, prev_error, prev_integrator, prev_differentiator, Kp=1, Ki=0, Kd=0.5, tau=0.1, T=0.01):
+def calc_control_signal(error, prev_error, prev_integrator, prev_differentiator, Kp=1, Ki=0, Kd=0.2, tau=0.01, T=0.001):
     """"This function calculates the control signal using a PID controller"""
 
     #calculate control signal
@@ -36,25 +36,39 @@ def calc_control_signal(error, prev_error, prev_integrator, prev_differentiator,
     #consider differentiator on measurement rather than on error see video in notes
     differentiator = Kd * 2/(2*tau + T) * (error - prev_error) + ((2 * tau - T)/(2 * tau + T)) * prev_differentiator
     control = proportional + integrator  + differentiator
-
+    print(control)
     #send control signal
     return control, integrator, differentiator
 
-def motor_control(control_signal):
+def motor_control(measurement_list):
     """"This function controls motors proportionally to the control signal"""
 
-    k = 8
-    if control_signal < 0:
-        gv.lmotor.Forward(k*control_signal)
-        gv.rmotor.Forward(100 - k*control_signal)
+    #k = 8
+    #if control_signal < 0:
+    #    gv.lmotor.Forward(k*control_signal)
+    #    gv.rmotor.Forward(100 - k*control_signal)
 
-    elif control_signal > 0:
-        gv.rmotor.Forward(k*control_signal)
-        gv.lmotor.Forward(100 - k*control_signal)
+    #elif control_signal > 0:
+    #    gv.rmotor.Forward(k*control_signal)
+    #    gv.lmotor.Forward(100 - k*control_signal)
 
+    #else:
+    #    gv.rmotor.Forward()
+    #    gv.lmotor.Forward()
+    if measurement_list == [1, 0, 0, 0]:
+        gv.rmotor.Forward(75)
+        gv.lmotor.Forward(50)
+    if measurement_list == [0, 1, 0, 0]:
+        gv.rmotor.Forward(100)
+        gv.lmotor.Forward(75)
+    if measurement_list == [0, 0, 1, 0]:
+        gv.rmotor.Forward(75)
+        gv.lmotor.Forward(100)
+    if measurement_list == [0, 0, 0, 1]:
+        gv.rmotor.Forward(50)
+        gv.lmotor.Forward(75)
     else:
-        gv.rmotor.Forward()
-        gv.lmotor.Forward()
+        pass
 
 def detect_L_turn(measurement_list):
     """"This function detects if there is a left turn"""
@@ -82,37 +96,31 @@ def detect_dropoff(measurement_list):
 #    if measurement_list == [1, 1, 1, 1]:
 #        return "at junction"
 
-def detect_junction(measurement_list):
-    """"This function detects any junction excluding dropoff"""
-
-    detect_L_turn(measurement_list)
-    detect_R_turn(measurement_list)
-    #detect_T_junction(measurement_list) ### I believe this function is redundant due to detect_R_turn & detect_L_Turn
-
 def line_following(pickup = False, dropoff = False):
     """This function follows a line until a junction is detected"""
     
     state = "not at junction"   
-    prev_error = 0
-    prev_integrator = 0
-    prev_differentiator = 0
-    control_signal = 0
+    #prev_error = 0
+    #prev_integrator = 0
+    #prev_differentiator = 0
+    #control_signal = 0
     qr_code_detected = False
 
     while state == "not at junction":
 
         measurement_list = get_measurement_list()
-        weighted_measurement_list = weight_measurement_list(measurement_list)
-        error = calc_error(weighted_measurement_list)
-        results = calc_control_signal(error, prev_error, prev_integrator, prev_differentiator)
+        #weighted_measurement_list = weight_measurement_list(measurement_list)
+        #error = calc_error(weighted_measurement_list)
+        #results = calc_control_signal(error, prev_error, prev_integrator, prev_differentiator)
 
-        control_signal = results[0]
-        prev_error = error
-        prev_integrator = results[1]
-        prev_differentiator = results[2]
+        #control_signal = results[0]
+        #prev_error = error
+        #prev_integrator = results[1]
+        #prev_differentiator = results[2]
 
-        motor_control(control_signal)
-        detect_junction(measurement_list)
+        motor_control(measurement_list)
+        detect_R_turn(measurement_list)
+        detect_L_turn(measurement_list)
 
         if dropoff == True:
             detect_dropoff(measurement_list)
