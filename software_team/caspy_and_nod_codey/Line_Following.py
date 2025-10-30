@@ -149,7 +149,7 @@ def line_following(pickup = False, dropoff = False):
                 qr_code = bc.get_qr_code()
                 if qr_code is not None:
                     qr_code_detected = True
-            bc.detect_box()
+            #bc.detect_box()
     if pickup == True:
         return qr_code
 
