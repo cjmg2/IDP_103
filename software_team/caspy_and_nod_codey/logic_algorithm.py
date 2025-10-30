@@ -258,6 +258,7 @@ def go_in_for_the_box_readqr():
     """
     with the bot facing the box, go straight in for the box, scan the qr code, lift the box, and move back to initial position
     """
+    #edity wedity this wittle cwode bwase pwease becwause there anotwer cwode simiwar
     destination, bay = read_qr()
     fwd(SMALL)
     fwd_until_junc()

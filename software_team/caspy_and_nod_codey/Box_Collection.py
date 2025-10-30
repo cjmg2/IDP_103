@@ -10,8 +10,7 @@ from libs.tiny_code_reader.tiny_code_reader import TinyCodeReader
    return angle"""
 
 def change_height(target_level, current_level):
-    led_pin = 15  # Pin 28 = GP28 (labelled 34 on the jumper)
-    led_PWM = PWM(Pin(15), 100)
+    servo_PWM = PWM(Pin(15), 100)
 
     if target_level > current_level:
         direction = 1
@@ -20,7 +19,7 @@ def change_height(target_level, current_level):
     while current_level != target_level:
         
         u16_level = int(65535 * current_level / 100)
-        led_PWM.duty_u16(u16_level)
+        servo_PWM.duty_u16(u16_level)
     
         #update level and sleep
         print(f"Level={current_level}, u16_level={u16_level}, direction={direction}")
@@ -132,6 +131,13 @@ def get_qr_code():
     i2c_bus = I2C(id=0, scl=Pin(17), sda=Pin(16), freq=400000) # I2C0 on GP16 & GP17
     tiny_code_reader = TinyCodeReader(i2c_bus)
     code = tiny_code_reader.poll()
+    counter = 0
+    while code == None:
+        code = tiny_code_reader.poll()
+        counter += 1
+        if counter > 10:
+            print("qr code not found")
+        
     return code
 
 #def get_s_distance():
