@@ -6,7 +6,7 @@ ultrasonic = ADC(Pin(26))
 
 #Store previous values
 previous_values = [0,0,0,0,0,0,0,0,0,0]
-new_object_cutoff = 0.75
+new_object_cutoff = 0.95
 
 while True:
     ultrasonic_value = ultrasonic.read_u16() # read value, 0-65535 across voltage range 0.0v - 3.3v
