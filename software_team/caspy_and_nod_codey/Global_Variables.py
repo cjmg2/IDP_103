@@ -22,3 +22,9 @@ global R
 R = Pin(21, Pin.IN, Pin.PULL_DOWN)
 global FR
 FR = Pin(18, Pin.IN, Pin.PULL_DOWN)
+
+global qr_enable
+qr_enable = Pin(14, Pin.OUT)
+
+global led_enable
+led_enable = Pin(10, Pin.OUT)

@@ -128,15 +128,17 @@ def detect_box():
         return "at junction"
 
 def get_qr_code():
-    i2c_bus = I2C(id=0, scl=Pin(17), sda=Pin(16), freq=400000) # I2C0 on GP16 & GP17
+    gv.qr_enable.value(1)
+    sleep(1) #WE CAN SPEED THIS UP A BIT EXPERIMENTALLY
+    i2c_bus = I2C(id=0, scl=Pin(9), sda=Pin(8), freq=400000) # I2C0 on GP16 & GP17
     tiny_code_reader = TinyCodeReader(i2c_bus)
     code = tiny_code_reader.poll()
     counter = 0
     while code == None:
+        sleep(TinyCodeReader.TINY_CODE_READER_DELAY)
         code = tiny_code_reader.poll()
         counter += 1
-        if counter > 10:
-            print("qr code not found")
+    gv.qr_enable.value(0)
         
     return code
 
