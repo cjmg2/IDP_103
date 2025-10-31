@@ -2,7 +2,6 @@ from machine import Pin, PWM, SoftI2C, I2C
 from utime import sleep
 import Global_Variables as gv
 from libs.tiny_code_reader.tiny_code_reader import TinyCodeReader
-    
 
 """def get_servo_angle():
    """"""reads the analogue feedback of the servo to get the current angle""""""
@@ -103,8 +102,7 @@ def lift_block():
 
 def get_f_distance():
     """This function returns the forward distance"""
-    i2c_bus = I2C(id=0, sda=Pin(8), scl=Pin(9), freq=100000)
-    tof = DFRobot_TMF8701(i2c_bus=i2c_bus)
+    tof = DFRobot_TMF8701(i2c_bus=i2c_bus_0)
 
     while(tof.begin() != 0):
       counter += 1
@@ -130,8 +128,7 @@ def detect_box():
 def get_qr_code():
     gv.qr_enable.value(1)
     sleep(1) #WE CAN SPEED THIS UP A BIT EXPERIMENTALLY
-    i2c_bus = I2C(id=0, scl=Pin(9), sda=Pin(8), freq=400000) # I2C0 on GP16 & GP17
-    tiny_code_reader = TinyCodeReader(i2c_bus)
+    tiny_code_reader = TinyCodeReader(gv.i2c_bus_1)
     code = tiny_code_reader.poll()
     counter = 0
     while code == None:
