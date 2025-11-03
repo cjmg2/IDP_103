@@ -127,7 +127,6 @@ def lift_block(current):
 
 def get_qr_code():
     """This function gets a qr code"""
-    gv.qr_enable.value(1)
     sleep(0.1) #WE CAN SPEED THIS UP A BIT EXPERIMENTALLY
     tiny_code_reader = TinyCodeReader(gv.i2c_bus_1)
     code = tiny_code_reader.poll()
@@ -136,7 +135,6 @@ def get_qr_code():
         sleep(TinyCodeReader.TINY_CODE_READER_DELAY)
         code = tiny_code_reader.poll()
         counter += 1
-    gv.qr_enable.value(0)
         
     return code
 
