@@ -360,12 +360,12 @@ def main():
     Runs the entire program, telling the robot to do phase 1 (boxes in all 4 bays)
     then phase 2 (boxes only added one by one to a random loading bay)
     """
-    Box_Collection.initalise_servo()
+    Box_Collection.initialise_servo()
+
     for q in range(4):
         if q == 0:
             start_at_yellow()
         else:
-            return 0
             phase_1_find_box()
         state.destination, state.bay = go_in_for_the_box_readqr()
         route = path_find(state.loc, state.destination)
@@ -381,6 +381,3 @@ def main():
         route = execute_travel(route)
         count_unload_return()
         return_to_color(route)
-
-main()
-    
