@@ -145,12 +145,15 @@ def line_following(pickup = False, dropoff = False):
             detect_dropoff(measurement_list)
         
         if pickup == True:
+            gv.qr_enable.value(1)
             if qr_code_detected == False:
                 qr_code = bc.get_qr_code()
                 if qr_code is not None:
                     qr_code_detected = True
             #bc.detect_box()
+    
     if pickup == True:
+        gv.qr_enable.value(0)
         return qr_code
 
 def turn_clockwise():
