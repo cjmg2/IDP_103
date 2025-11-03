@@ -29,7 +29,7 @@ def test_vl53l0x():
                 
             for i in range(len(previous_values)-1):
                 previous_values[i] = previous_values[i+1]
-                previous_values[len(previous_values) - 1] = ultrasonic_value
+                previous_values[len(previous_values) - 1] = distance
             
             print(f"Distance = {distance}mm")  # Check calibration!
             sleep(0.2)
