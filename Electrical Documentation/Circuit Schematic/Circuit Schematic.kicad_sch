@@ -4749,7 +4749,7 @@
 			)
 		)
 	)
-	(global_label "Push Button"
+	(global_label "Line Sensor 4"
 		(shape input)
 		(at 181.61 83.82 0)
 		(fields_autoplaced yes)
@@ -4759,9 +4759,31 @@
 			)
 			(justify left)
 		)
-		(uuid "527faa9b-5410-4fa7-80dc-2fccd6c8a92c")
+		(uuid "4aa1683a-12f5-4ec1-a92d-e081b8ee3006")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 196.3273 83.82 0)
+			(at 198.0208 83.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "Push Button"
+		(shape input)
+		(at 181.61 99.06 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "4df1b791-8890-4968-a13c-319383f0ee03")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 196.3273 99.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4947,28 +4969,6 @@
 			)
 		)
 	)
-	(global_label "Line Sensor 4"
-		(shape input)
-		(at 181.61 99.06 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "8b41268c-594a-4ac9-8f61-02beb98e42c0")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 198.0208 99.06 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-	)
 	(global_label "Line Sensor 2"
 		(shape input)
 		(at 181.61 93.98 0)
@@ -5053,28 +5053,6 @@
 					(size 1.27 1.27)
 				)
 				(justify right)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "Line Sensor 3"
-		(shape input)
-		(at 198.12 96.52 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "a21ba692-a10c-414e-9665-14b569eb68c2")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 214.5308 96.52 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
 				(hide yes)
 			)
 		)
@@ -5277,6 +5255,28 @@
 			)
 		)
 	)
+	(global_label "Line Sensor 1"
+		(shape input)
+		(at 198.12 96.52 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "c956a36a-55b9-40ad-8b8b-15c65716e1c8")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 214.5308 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "SCL 1"
 		(shape input)
 		(at 68.58 45.72 180)
@@ -5409,28 +5409,6 @@
 			)
 		)
 	)
-	(global_label "Line Sensor 1"
-		(shape input)
-		(at 198.12 86.36 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "f02339cc-30c5-482c-887b-a7950f0734c3")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 214.5308 86.36 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-	)
 	(global_label "Code Reader Enable"
 		(shape input)
 		(at 135.89 116.84 180)
@@ -5449,6 +5427,28 @@
 					(size 1.27 1.27)
 				)
 				(justify right)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "Line Sensor 3"
+		(shape input)
+		(at 198.12 86.36 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "f8d30937-0225-414d-a43c-e3e09ccb2186")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 214.5308 86.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
 				(hide yes)
 			)
 		)
