@@ -78,12 +78,12 @@ def motor_control(measurement_list):
     if measurement_list == [0, 0, 1, 1] or measurement_list == [0, 1, 1, 1] or measurement_list == [1, 1, 1, 1]:
         gv.rmotor.off()
         gv.lmotor.off()
-        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        #print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
         return "at junction"
     if measurement_list == [1, 1, 0, 0] or measurement_list == [1, 1, 1, 0] or measurement_list == [1, 1, 1, 1]:
         gv.rmotor.off()
         gv.lmotor.off()
-        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        #print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
         return "at junction"
     else:
         pass
