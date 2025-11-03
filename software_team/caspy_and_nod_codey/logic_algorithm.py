@@ -1,8 +1,8 @@
 import Box_Collection
 import Line_Following
 
-#to fix = TO_QR< make it fixed, and also step fwd, try to integrate a mixture of junction and also blind forward so its more foolproof
 SMALL = 5/20
+TEMP_BLIND = 4/20
 OUT_OF_HOME = 20/20
 OUT_OF_BAY = 10/20
 STEP_FWD = 40
@@ -140,8 +140,7 @@ def is_LHS_lidar_pos():
 def rvs(distance):
     Line_Following.blind_reverse(distance_wanted = distance)
 
-def read_qr():
-    text = Box_Collection.get_qr_code()
+def parse_qr(text):
 
     translator = {
         "A": "orange",
@@ -258,11 +257,10 @@ def go_in_for_the_box_readqr():
     """
     with the bot facing the box, go straight in for the box, scan the qr code, lift the box, and move back to initial position
     """
-    #edity wedity this wittle cwode bwase pwease becwause there anotwer cwode simiwar
-    destination, bay = read_qr()
     fwd(SMALL)
-    fwd_until_junc()
-    fwd_until_box()
+    text = Line_Following.line_following(pickup=True)
+    destination, bay = parse_qr(text)
+    Line_Following.blind_forward(TEMP_BLIND)
     load_fork()
     if state.loc == "Red" or state.loc == "Yellow":
         clockwise()
