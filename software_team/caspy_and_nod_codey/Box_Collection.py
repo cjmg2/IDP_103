@@ -25,16 +25,16 @@ def change_height(target_level, current_level):
         current_level += direction
         sleep(0.1)
 
-def initialise_servo():
-    change_height(0)
-def lower_to_ground():
-    change_height(0)
-def lower_onto_rack():
-    change_height(30)
-def raise_to_rack():
-    change_height(30)
-def lift_block():
-    change_height(40)
+def initialise_servo(current):
+    change_height(current, 0)
+def lower_to_ground(current):
+    change_height(current, 0)
+def lower_onto_rack(current):
+    change_height(current, 14)
+def raise_to_rack(current):
+    change_height(current, 14)
+def lift_block(current):
+    change_height(current, 16)
 
 
 
