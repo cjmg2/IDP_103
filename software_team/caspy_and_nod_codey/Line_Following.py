@@ -2,6 +2,7 @@ from machine import Pin, PWM
 import time
 import Box_Collection as bc
 import Global_Variables as gv
+import Button
 
 def get_measurement_list():
     """"This function returns a list of light sensor reading"""
@@ -162,6 +163,8 @@ def line_following(pickup = False, dropoff = False, blind=False, blind_time=0):
         prev_differentiator = results[2]
         
         state = junc_detection(measurement_list)
+
+        Button.button_interupt()
         
         end_time = time.time_ns()
         
