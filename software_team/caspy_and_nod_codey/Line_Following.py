@@ -11,7 +11,7 @@ def get_measurement_list():
 def weight_measurement_list(measurement_list):
     """This function gives weights to a list of measurements equal to the sensor distances from the centre"""
 
-    return [measurement_list[0] * -3.5, measurement_list[1] * -0.8, measurement_list[2] * 0.8, measurement_list[3] * 3.5] #update with weigtings equal to the distance of each sensor from the centre
+    return [measurement_list[0] * -4, measurement_list[1] * -1.25, measurement_list[2] * 1.25, measurement_list[3] * 4] #update with weigtings equal to the distance of each sensor from the centre
 
 
 def calc_error(weighted_measurement_list, setpoint=0):
@@ -29,15 +29,17 @@ def calc_error(weighted_measurement_list, setpoint=0):
         measurement = None
     return measurement
 
-def calc_control_signal(error, prev_error, prev_integrator, prev_differentiator, Kp=0.8, Ki=0, Kd=0.85, tau=0.1, T=0.1):
+def calc_control_signal(error, prev_error, prev_integrator, prev_differentiator, Kp=6, Ki=0, Kd=0.1, tau=0.0005, T=0.05):
     """"This function calculates the control signal using a PID controller"""
+
+    # To adjust first adjust Kp. Then adjust Ki. Then adjust Kd. If too much noise when Kd adjusted then adjust tau for more smoothing
 
     #calculate control signal
     proportional = Kp * error
     integrator = Ki * T/2 * (error + prev_error) + prev_integrator
 
     #consider differentiator on measurement rather than on error see video in notes
-    differentiator = Kd * 2/(2*tau + T) * (error - prev_error) + ((2 * tau - T)/(2 * tau + T)) * prev_differentiator
+    differentiator = Kd * 2 * (error - prev_error)/(2*tau + T) + ((2 * tau - T)/(2 * tau + T)) * prev_differentiator
     control = proportional + integrator  + differentiator
     print(control)
     #send control signal
@@ -46,7 +48,7 @@ def calc_control_signal(error, prev_error, prev_integrator, prev_differentiator,
 def motor_control(control_signal):
     """"This function controls motors proportionally to the control signal"""
     #print(measurement_list)
-    k = 25
+    k = 1
     if control_signal < 0:
         gv.lmotor.Forward(75 + k*control_signal)
         gv.rmotor.Forward(75 - k*control_signal)
@@ -119,16 +121,17 @@ def detect_R_turn(measurement_list):
 #        return "at junction"
 
 def junc_detection(measurement_list):
-    if detect_R_turn(measurement_list) == "at junction":
-        return "at junction"
-    if detect_L_turn(measurement_list) == "at junction":
-        return "at junction"
+    if detect_R_turn(measurement_list) == "at junction" or detect_L_turn(measurement_list) == "at junction":
+        gv.junc_counter += 1
+        if gv.junc_counter > 5:
+            return "at junction"
     else:
         return "not at junction"
 
 def line_following(pickup = False, dropoff = False, blind=False, blind_time=0):
     """This function follows a line until a junction is detected"""
     
+    gv.junc_counter = 0
     state = "not at junction"   
     prev_error = 0
     prev_integrator = 0
@@ -141,7 +144,7 @@ def line_following(pickup = False, dropoff = False, blind=False, blind_time=0):
     counter = 0
     
     while state == "not at junction":
-        start_time = time.time()
+        start_time = time.time_ns()
         time.sleep(0.05)
         measurement_list = get_measurement_list()
         counter += 1
@@ -160,7 +163,7 @@ def line_following(pickup = False, dropoff = False, blind=False, blind_time=0):
         
         state = junc_detection(measurement_list)
         
-        end_time = time.time()
+        end_time = time.time_ns()
         
         print(control_signal)
 
