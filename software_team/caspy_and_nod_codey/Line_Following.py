@@ -183,17 +183,20 @@ def line_following(pickup = False, dropoff = False, blind=False, blind_time=0):
             time_remaining = time_remaining - time_elapsed
             if time_remaining < 0:
                 state = "blind finished"
+
+        if pickup == True:
+            bc.detect_box()
+        if pickup == False:
+            gv.box_status = bc.box_still_on()
         
     gv.rmotor.off()
     gv.lmotor.off()
         
-        #if pickup == True:
             
         #    if qr_code_detected == False:
         #        qr_code = bc.get_qr_code()
         #        if qr_code is not None:
         #            qr_code_detected = True
-            #bc.detect_box()
     
     #if pickup == True and qr_code_detected == True:
      #   return qr_code

@@ -113,15 +113,27 @@ def get_f_distance():
         if(gv.tmf8701.is_data_ready() == True):
             return gv.tmf8701.get_distance_mm()
         counter += 1
-        if counter > 10:
+        sleep(0.05)
+        if counter > 5:
+            print("Box not found")
             break
-    return tof.get_distance_mm()
 
 def detect_box():
-    """This function detects when within 5mm of a box"""
-    d = 5
+    """This function detects when within d mm of a box"""
+    d = 2
     if get_f_distance() < d:
-        return "at junction"
+        return "Box collected"
+    else:
+        return "not at junction"
+    
+def box_still_on():
+    """This function detects if the box is still on the fork"""
+    TOF = get_f_distance()
+    LENGTH_OF_FORK = 10
+    if TOF > LENGTH_OF_FORK:
+        return "No Box"
+    else:
+        return "Yes Box"
 
 def get_qr_code():
     """This function gets a qr code"""
