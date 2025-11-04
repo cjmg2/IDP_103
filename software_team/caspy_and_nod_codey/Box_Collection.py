@@ -104,30 +104,21 @@ def lift_block():
 #         u16_level = int(65535 * gv.level / 100)
 #         gv.servo_pin.duty_u16(u16_level)
 
-#def get_f_distance():
-#    """This function returns the forward distance"""
-#    tof = DFRobot_TMF8701(i2c_bus=i2c_bus_0)
-#
-#    while(tof.begin() != 0):
-#      counter += 1
-#      if counter > 100:
-#          break
-#      sleep(0.5)
-#    tof.start_measurement(calib_m = tof.eMODE_NO_CALIB, mode = tof.eCOMBINE)
-    
-#    while True:
-#        if(tof.is_data_ready() == True):
-#            return tof.get_distance_mm()
-#        counter += 1
-#        if counter > 100:
-#            break
-#    return tof.get_distance_mm()
+def get_f_distance():
+    """This function returns the forward distance"""
+    while True:
+        if(gv.tmf8701.is_data_ready() == True):
+            return gv.tmf8701.get_distance_mm()
+        counter += 1
+        if counter > 10:
+            break
+    return tof.get_distance_mm()
 
-#def detect_box():
-#    """This function detects when within 5mm of a box"""
-#    d = 5
-#    if get_f_distance() < d:
-#        return "at junction"
+def detect_box():
+    """This function detects when within 5mm of a box"""
+    d = 5
+    if get_f_distance() < d:
+        return "at junction"
 
 def get_qr_code():
     """This function gets a qr code"""
