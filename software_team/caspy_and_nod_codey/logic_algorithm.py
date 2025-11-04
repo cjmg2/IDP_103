@@ -3,7 +3,7 @@ import Line_Following
 import Button
 import Global_Variables as gv
 
-SMALL = 5/20
+SMALL = 3/20
 CLOCK_SMALL = 4/20
 TEMP_BLIND = 9/20
 OUT_OF_HOME = 20/20
@@ -181,13 +181,17 @@ def count_unload_return():
     counts how many bays it has moved past and turns into the desired bay.
     tells robot to unload and return back to original position
     """
+    print(state.bay)
     counter = 0
     if state.destination == "U_purple" or state.destination == "L_orange":
         dest_general = 7 - state.bay
     else:
         dest_general = state.bay
+    print(dest_general)
     while counter < dest_general:
         fwd_until_junc()
+        fwd(SMALL)
+        print(counter)
         counter += 1
     turn_unload_return(dest_general)
 
