@@ -152,25 +152,31 @@ def line_following(pickup = False, dropoff = False):
     #if pickup == True and qr_code_detected == True:
      #   return qr_code
 
-def turn_clockwise():
+def turn_clockwise(speed):
     """"This function turns the robot 90 degrees clockwise"""
 
     gv.rmotor.off()
     gv.lmotor.off()
-    gv.rmotor.Reverse(100)
-    gv.lmotor.Forward(100)
-    time.sleep(0.65)
+    gv.rmotor.Reverse(speed)
+    gv.lmotor.Forward(speed)
+    if speed == 100:
+        time.sleep(0.65)
+    elif speed == 50:
+        time.sleep(1.3)
     gv.rmotor.off()
     gv.lmotor.off()
 
-def turn_anticlockwise():
+def turn_anticlockwise(speed):
     """"This function turns the robot 90 degrees anticlockwise"""
 
     gv.rmotor.off()
     gv.lmotor.off()
-    gv.rmotor.Forward(100)
-    gv.lmotor.Reverse(100)
-    time.sleep(0.65)
+    gv.rmotor.Forward(speed)
+    gv.lmotor.Reverse(speed)
+    if speed == 100:
+        time.sleep(0.65)
+    elif speed == 50:
+        time.sleep(1.3)
     gv.rmotor.off()
     gv.lmotor.off()
 

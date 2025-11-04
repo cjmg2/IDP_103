@@ -112,13 +112,13 @@ def path_find(start, dest):
 def fwd_until_junc():
     Line_Following.line_following(pickup=False, dropoff=False)
 
-def clockwise(complete=False):
-    Line_Following.turn_clockwise()
+def clockwise(complete=False, speed = 100):
+    Line_Following.turn_clockwise(speed)
     if complete == False:
         Line_Following.blind_forward(CLOCK_SMALL)
 
-def anticlockwise(complete=False):
-    Line_Following.turn_anticlockwise()
+def anticlockwise(complete=False, speed = 100):
+    Line_Following.turn_anticlockwise(speed)
     if complete == False:
         Line_Following.blind_forward(CLOCK_SMALL)
 
@@ -278,11 +278,11 @@ def go_in_for_the_box_readqr():
     Line_Following.blind_forward(TEMP_BLIND)
     load_fork()
     if state.loc == "Red" or state.loc == "Yellow":
-        clockwise(complete = True)
-        clockwise()
+        clockwise(complete = True, speed = 50)
+        clockwise(speed = 50)
     elif state.loc == "Blue" or state.loc == "Green":
-        anticlockwise(complete = True)
-        anticlockwise()
+        anticlockwise(complete = True, speed = 50)
+        anticlockwise(speed = 50)
     Line_Following.blind_forward(OUT_OF_COLORED_BAYS)
     fwd_until_junc()
     state.orien = 180
