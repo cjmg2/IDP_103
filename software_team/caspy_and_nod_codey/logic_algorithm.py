@@ -2,6 +2,7 @@ import Box_Collection
 import Line_Following
 import Button
 import Global_Variables as gv
+import time
 
 SMALL = 3/20
 CLOCK_SMALL = 4/20
@@ -83,6 +84,7 @@ def mini_path_find(start, dest, min_max):
             start = max(branches, key = lambda branches: path_det[branches])
             
         queue.append(start)
+    print(queue)
     return queue
 
 def path_find(start, dest):
@@ -139,7 +141,7 @@ def unload_fork():
         Box_Collection.lower_onto_rack()
 
 def fwd_until_black():
-    Line_Following.line_following(blind = True, blind_time = 2.0)
+    Line_Following.line_following(blind = True, blind_time = 2 * 1000000000)
 
 def fwd_until_box():
     Line_Following.line_following(pickup=True, dropoff=False)
@@ -220,8 +222,10 @@ def execute_travel(route):
             clockwise(complete = True)
             clockwise()
             state.orien = (state.orien + 180) % 360
-        if {current_node, next_node} in [{"Red", "L_orange"}, {"Blue", "L_purple"}] and not destination in ["L_purple", "L_orange"]:
-            for i in range(6):
+        elif turn_angle == 0 or turn_angle == 360 or turn_angle == -360:
+            fwd(SMALL)
+        if {current_node, next_node} in [{"Blue", "L_orange"}, {"Red", "L_purple"}] and not state.destination in ["L_purple", "L_orange"]:
+            for i in range(7):
                 fwd_until_junc()
                 fwd(SMALL)
         fwd_until_junc()
@@ -283,18 +287,20 @@ def go_in_for_the_box_readqr():
     while text == None and counter < 50:
         counter += 1
         text = Box_Collection.get_qr_code()
-        Line_Following.line_following(blind = True, blind_time = 0.2)
+        Line_Following.line_following(blind = True, blind_time = 0.2 * 1000000000)
     Line_Following.line_following()
     destination, bay = parse_qr(text)
     Line_Following.blind_forward(TEMP_BLIND)
     load_fork()
+    time.sleep(0.3)
+    rvs(OUT_OF_COLORED_BAYS)
     if state.loc == "Red" or state.loc == "Yellow":
-        clockwise(complete = True, speed = 50)
-        clockwise(speed = 50)
+        clockwise(complete = True, speed = 70)
+        clockwise(speed = 70)
     elif state.loc == "Blue" or state.loc == "Green":
-        anticlockwise(complete = True, speed = 50)
-        anticlockwise(speed = 50)
-    Line_Following.blind_forward(OUT_OF_COLORED_BAYS)
+        anticlockwise(complete = True, speed = 70)
+        anticlockwise(speed = 70)
+    
     fwd_until_junc()
     state.orien = 180
     state.remaining_boxes.remove(state.loc)

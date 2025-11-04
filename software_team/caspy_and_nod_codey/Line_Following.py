@@ -29,7 +29,7 @@ def calc_error(weighted_measurement_list, setpoint=0):
         measurement = None
     return measurement
 
-def calc_control_signal(error, prev_error, prev_integrator, prev_differentiator, Kp=6, Ki=0, Kd=0.1, tau=0.0005, T=0.05):
+def calc_control_signal(error, prev_error, prev_integrator, prev_differentiator, Kp=40, Ki=0, Kd=0.1, tau=0.0005, T=0.05):
     """"This function calculates the control signal using a PID controller"""
 
     # To adjust first adjust Kp. Then adjust Ki. Then adjust Kd. If too much noise when Kd adjusted then adjust tau for more smoothing
@@ -41,7 +41,7 @@ def calc_control_signal(error, prev_error, prev_integrator, prev_differentiator,
     #consider differentiator on measurement rather than on error see video in notes
     differentiator = Kd * 2 * (error - prev_error)/(2*tau + T) + ((2 * tau - T)/(2 * tau + T)) * prev_differentiator
     control = proportional + integrator  + differentiator
-    print(control)
+    #print(control)
     #send control signal
     return control, integrator, differentiator
 
@@ -148,8 +148,8 @@ def line_following(pickup = False, dropoff = False, blind=False, blind_time=0):
         time.sleep(0.05)
         measurement_list = get_measurement_list()
         counter += 1
-        print(measurement_list)
-        print(counter)
+        #print(measurement_list)
+        #print(counter)
         weighted_measurement_list = weight_measurement_list(measurement_list)
         error = calc_error(weighted_measurement_list)
         if error == None:
@@ -165,7 +165,7 @@ def line_following(pickup = False, dropoff = False, blind=False, blind_time=0):
         
         end_time = time.time_ns()
         
-        print(control_signal)
+        #print(control_signal)
 
         motor_control(control_signal)
         #detect_R_turn(measurement_list)
@@ -203,9 +203,9 @@ def turn_clockwise(speed):
     gv.rmotor.Reverse(speed)
     gv.lmotor.Forward(speed)
     if speed == 100:
-        time.sleep(0.65)
-    elif speed == 50:
-        time.sleep(1.9)
+        time.sleep(0.57)
+    elif speed == 70:
+        time.sleep(1.2)
     gv.rmotor.off()
     gv.lmotor.off()
 
@@ -217,9 +217,9 @@ def turn_anticlockwise(speed):
     gv.rmotor.Forward(speed)
     gv.lmotor.Reverse(speed)
     if speed == 100:
-        time.sleep(0.65)
-    elif speed == 50:
-        time.sleep(1.9)
+        time.sleep(0.57)
+    elif speed == 70:
+        time.sleep(1.2)
     gv.rmotor.off()
     gv.lmotor.off()
 
