@@ -8,33 +8,37 @@ from libs.tiny_code_reader.tiny_code_reader import TinyCodeReader
    angle=gv.adc.read_u16()*0.47-33.4 #this is the function on the servo documentation to get the angle from the analogue output
    return angle"""
 
-def change_height(target_level, current_level):
+def change_height(target_level):
     servo_PWM = PWM(Pin(15), 100)
+    u16_level = int(65535 * target_level / 100)
+    servo_PWM.duty_u16(u16_level)
 
-    if target_level > current_level:
-        direction = 1
-    if target_level < current_level:
-        direction = -1
-    while current_level != target_level:
+    #if target_level > current_level:
+    #    direction = 1
+    #if target_level < current_level:
+    #    direction = -1
+    #while current_level != target_level:
         
-        u16_level = int(65535 * current_level / 100)
-        servo_PWM.duty_u16(u16_level)
+    #    u16_level = int(65535 * current_level / 100)
+    #    servo_PWM.duty_u16(u16_level)
     
         #update level and sleep
-        print(f"Level={current_level}, u16_level={u16_level}, direction={direction}")
-        current_level += direction
-        sleep(0.1)
+    #    print(f"Level={current_level}, u16_level={u16_level}, direction={direction}")
+    #    current_level += direction
+    #    sleep(0.1)
 
-def initialise_servo(current):
-    change_height(current, 0)
-def lower_to_ground(current):
-    change_height(current, 0)
-def lower_onto_rack(current):
-    change_height(current, 14)
-def raise_to_rack(current):
-    change_height(current, 14)
-def lift_block(current):
-    change_height(current, 16)
+def initialise_servo():
+    change_height(6.2)
+
+def lower_to_ground():
+    change_height(6.2)
+
+def lower_onto_rack():
+    change_height(12)
+
+def lift_block():
+    change_height(14.5)
+
 
 
 
@@ -127,15 +131,17 @@ def lift_block(current):
 
 def get_qr_code():
     """This function gets a qr code"""
+    gv.qr_enable.value(1)
+    sleep(TinyCodeReader.TINY_CODE_READER_DELAY)
     sleep(0.1) #WE CAN SPEED THIS UP A BIT EXPERIMENTALLY
-    tiny_code_reader = TinyCodeReader(gv.i2c_bus_1)
-    code = tiny_code_reader.poll()
+    code = gv.tiny_code_reader.poll()
     counter = 0
-    while code == None and counter <= 5:
+    while code == None and counter <= 10:
         sleep(TinyCodeReader.TINY_CODE_READER_DELAY)
-        code = tiny_code_reader.poll()
+        code = gv.tiny_code_reader.poll()
         counter += 1
-        
+    print(code)
+    gv.qr_enable.value(0)
     return code
 
 #def get_s_distance():
@@ -160,3 +166,4 @@ def get_qr_code():
 #    return tof.get_distance_mm()
 
 #def findbox():
+
