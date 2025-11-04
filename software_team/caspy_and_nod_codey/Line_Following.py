@@ -162,7 +162,7 @@ def turn_clockwise(speed):
     if speed == 100:
         time.sleep(0.65)
     elif speed == 50:
-        time.sleep(1.3)
+        time.sleep(1.9)
     gv.rmotor.off()
     gv.lmotor.off()
 
@@ -176,7 +176,7 @@ def turn_anticlockwise(speed):
     if speed == 100:
         time.sleep(0.65)
     elif speed == 50:
-        time.sleep(1.3)
+        time.sleep(1.9)
     gv.rmotor.off()
     gv.lmotor.off()
 

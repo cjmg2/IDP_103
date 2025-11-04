@@ -57,9 +57,16 @@ class State:
         self.destination = None
         self.bay = None
         self.remaining_boxes = ["Red", "Blue", "Green", "Yellow"]
+        self.phase = 1
+        
 
 global state
 state = State("Home", 180)
+
+def crashed(phase):
+    state.loc = "Home"
+    state.orien = 180
+    state.phase = phase
 
 def mini_path_find(start, dest, min_max):
     """
