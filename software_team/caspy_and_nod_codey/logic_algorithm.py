@@ -359,7 +359,9 @@ def start_at_yellow():
     Instructs the robot to move from home to yellow, the first loading bay
     """
 
-    fwd(OUT_OF_HOME)
+    fwd_until_junc()
+    gv.led_enable.value(1)
+    fwd(SMALL)
     fwd_until_junc()
     clockwise()
     fwd_until_junc()
