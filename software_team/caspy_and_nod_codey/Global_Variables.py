@@ -48,3 +48,6 @@ i2c_bus_1 = I2C(id=1, scl=Pin(19), sda=Pin(18), freq=400000)
 
 global tiny_code_reader
 tiny_code_reader = TinyCodeReader(i2c_bus_1)
+
+global junc_counter
+junc_counter = 0

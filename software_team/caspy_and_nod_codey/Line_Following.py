@@ -23,10 +23,13 @@ def calc_error(weighted_measurement_list, setpoint=0):
         if value != 0:
             temp += value
             counter += 1
-    measurement = temp / counter
-    return measurement - setpoint
+    if counter != 0:
+        measurement = temp / counter
+    else:
+        measurement = None
+    return measurement
 
-def calc_control_signal(error, prev_error, prev_integrator, prev_differentiator, Kp=1, Ki=0, Kd=0.2, tau=0.01, T=0.001):
+def calc_control_signal(error, prev_error, prev_integrator, prev_differentiator, Kp=0.8, Ki=0, Kd=0.85, tau=0.1, T=0.1):
     """"This function calculates the control signal using a PID controller"""
 
     #calculate control signal
@@ -40,51 +43,54 @@ def calc_control_signal(error, prev_error, prev_integrator, prev_differentiator,
     #send control signal
     return control, integrator, differentiator
 
-def motor_control(measurement_list):
+def motor_control(control_signal):
     """"This function controls motors proportionally to the control signal"""
     #print(measurement_list)
-    #k = 8
-    #if control_signal < 0:
-    #    gv.lmotor.Forward(k*control_signal)
-    #    gv.rmotor.Forward(100 - k*control_signal)
+    k = 25
+    if control_signal < 0:
+        gv.lmotor.Forward(75 + k*control_signal)
+        gv.rmotor.Forward(75 - k*control_signal)
 
-    #elif control_signal > 0:
-    #    gv.rmotor.Forward(k*control_signal)
-    #    gv.lmotor.Forward(100 - k*control_signal)
+    elif control_signal > 0:
+        gv.rmotor.Forward(75 - k*control_signal)
+        gv.lmotor.Forward(75 + k*control_signal)
+    else:
+        gv.lmotor.Forward(75)
+        gv.rmotor.Forward(75)
 
     #else:
     #    gv.rmotor.Forward()
     #    gv.lmotor.Forward()
-    if measurement_list == [0, 1, 1, 0] or measurement_list == [0, 0, 0, 0]:
-        gv.rmotor.Forward(100)
-        gv.lmotor.Forward(100)
-        return "not at junction"
-    if measurement_list == [1, 0, 0, 0]:
-        gv.rmotor.Forward(100)
-        gv.lmotor.Forward(40)
-        return "not at junction"
-    if measurement_list == [0, 1, 0, 0]:
-        gv.rmotor.Forward(100)
-        gv.lmotor.Forward(60)
-        return "not at junction"
-    if measurement_list == [0, 0, 1, 0]:
-        gv.rmotor.Forward(60)
-        gv.lmotor.Forward(100)
-        return "not at junction"
-    if measurement_list == [0, 0, 0, 1]:
-        gv.rmotor.Forward(40)
-        gv.lmotor.Forward(100)
-        return "not at junction"
-    if measurement_list == [0, 1, 1, 1] or measurement_list == [1, 1, 1, 1]:
-        gv.rmotor.off()
-        gv.lmotor.off()
+    #if measurement_list == [0, 1, 1, 0] or measurement_list == [0, 0, 0, 0]:
+    #    gv.rmotor.Forward(80)
+    #    gv.lmotor.Forward(80)
+    #    return "not at junction"
+    #if measurement_list == [1, 0, 0, 0]:
+    #    gv.rmotor.Forward(100)
+    #    gv.lmotor.Forward(60)
+    #    return "not at junction"
+    #if measurement_list == [0, 1, 0, 0]:
+    #    gv.rmotor.Forward(100)
+    #    gv.lmotor.Forward(40)
+    #    return "not at junction"
+    #if measurement_list == [0, 0, 1, 0]:
+   #     gv.rmotor.Forward(40)
+    #    gv.lmotor.Forward(100)
+     #   return "not at junction"
+    #if measurement_list == [0, 0, 0, 1]:
+     #   gv.rmotor.Forward(60)
+       # gv.lmotor.Forward(100)
+      #  return "not at junction"
+    #if measurement_list == [0, 0, 1, 1] or measurement_list == [1, 1, 1, 1]:
+     #   gv.rmotor.off()
+      #  gv.lmotor.off()
         #print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-        return "at junction"
-    if measurement_list == [1, 1, 1, 0] or measurement_list == [1, 1, 1, 1]:
-        gv.rmotor.off()
-        gv.lmotor.off()
+       # return "at junction"
+    #if measurement_list == [1, 1, 0, 0] or measurement_list == [1, 1, 1, 1]:
+     #   gv.rmotor.off()
+      #  gv.lmotor.off()
         #print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-        return "at junction"
+       # return "at junction"
 
 def detect_L_turn(measurement_list):
     """"This function detects if there is a left turn"""
@@ -100,11 +106,11 @@ def detect_R_turn(measurement_list):
     if detection_list == [0, 0, 1, 1]:
         return "at junction"
 
-def detect_dropoff(measurement_list):
-    """"This function detects if there is no line"""
-
-    if measurement_list == [0, 0, 0, 0]:
-        return "at junction"
+#def detect_dropoff(measurement_list):
+#    """"This function detects if there is no line"""
+#
+#    if measurement_list == [0, 0, 0, 0]:
+#        return "at junction"
 
 #def detect_T_junction(measurement_list):             ### I believe this function is redundant due to detect_R_turn & detect_L_Turn
 #    """"This function detects if there is a T junction"""
@@ -112,34 +118,68 @@ def detect_dropoff(measurement_list):
 #    if measurement_list == [1, 1, 1, 1]:
 #        return "at junction"
 
-def line_following(pickup = False, dropoff = False):
+def junc_detection(measurement_list):
+    if detect_R_turn(measurement_list) == "at junction":
+        return "at junction"
+    if detect_L_turn(measurement_list) == "at junction":
+        return "at junction"
+    else:
+        return "not at junction"
+
+def line_following(pickup = False, dropoff = False, blind=False, blind_time=0):
     """This function follows a line until a junction is detected"""
     
     state = "not at junction"   
-    #prev_error = 0
-    #prev_integrator = 0
-    #prev_differentiator = 0
-    #control_signal = 0
-    qr_code_detected = False
-
+    prev_error = 0
+    prev_integrator = 0
+    prev_differentiator = 0
+    control_signal = 0
+    #qr_code_detected = False
+    
+    time_remaining = blind_time
+    
+    counter = 0
+    
     while state == "not at junction":
+        start_time = time.time()
         time.sleep(0.05)
         measurement_list = get_measurement_list()
-        #weighted_measurement_list = weight_measurement_list(measurement_list)
-        #error = calc_error(weighted_measurement_list)
-        #results = calc_control_signal(error, prev_error, prev_integrator, prev_differentiator)
+        counter += 1
+        print(measurement_list)
+        print(counter)
+        weighted_measurement_list = weight_measurement_list(measurement_list)
+        error = calc_error(weighted_measurement_list)
+        if error == None:
+            error = prev_error
+        results = calc_control_signal(error, prev_error, prev_integrator, prev_differentiator)
 
-        #control_signal = results[0]
-        #prev_error = error
-        #prev_integrator = results[1]
-        #prev_differentiator = results[2]
+        control_signal = results[0]
+        prev_error = error
+        prev_integrator = results[1]
+        prev_differentiator = results[2]
+        
+        state = junc_detection(measurement_list)
+        
+        end_time = time.time()
+        
+        print(control_signal)
 
-        state = motor_control(measurement_list)
+        motor_control(control_signal)
         #detect_R_turn(measurement_list)
         #detect_L_turn(measurement_list) # Do not need a detect T junction
         #print(state)
-        if dropoff == True:
-            detect_dropoff(measurement_list)
+        #if dropoff == True:
+         #   detect_dropoff(measurement_list)
+        
+        
+        if blind == True:
+            time_elapsed = end_time - start_time
+            time_remaining = time_remaining - time_elapsed
+            if time_remaining < 0:
+                state = "blind finished"
+        
+    gv.rmotor.off()
+    gv.lmotor.off()
         
         #if pickup == True:
             
@@ -162,7 +202,7 @@ def turn_clockwise(speed):
     if speed == 100:
         time.sleep(0.65)
     elif speed == 50:
-        time.sleep(1.3)
+        time.sleep(1.9)
     gv.rmotor.off()
     gv.lmotor.off()
 
@@ -176,7 +216,7 @@ def turn_anticlockwise(speed):
     if speed == 100:
         time.sleep(0.65)
     elif speed == 50:
-        time.sleep(1.3)
+        time.sleep(1.9)
     gv.rmotor.off()
     gv.lmotor.off()
 

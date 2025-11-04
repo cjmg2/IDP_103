@@ -57,9 +57,16 @@ class State:
         self.destination = None
         self.bay = None
         self.remaining_boxes = ["Red", "Blue", "Green", "Yellow"]
+        self.phase = 1
+        
 
 global state
 state = State("Home", 180)
+
+def crashed(phase):
+    state.loc = "Home"
+    state.orien = 180
+    state.phase = phase
 
 def mini_path_find(start, dest, min_max):
     """
@@ -132,7 +139,7 @@ def unload_fork():
         Box_Collection.lower_onto_rack()
 
 def fwd_until_black():
-    Line_Following.line_following(pickup=False, dropoff=True)
+    Line_Following.line_following(blind = True, blind_time = 2.0)
 
 def fwd_until_box():
     Line_Following.line_following(pickup=True, dropoff=False)
@@ -269,10 +276,10 @@ def go_in_for_the_box_readqr():
     fwd(SMALL)
     text = None
     counter = 0
-    while text == None and counter < 10:
+    while text == None and counter < 50:
         counter += 1
         text = Box_Collection.get_qr_code()
-        Line_Following.blind_forward(TINY_QR_FWD)
+        Line_Following.line_following(blind = True, blind_time = 0.2)
     Line_Following.line_following()
     destination, bay = parse_qr(text)
     Line_Following.blind_forward(TEMP_BLIND)
@@ -388,17 +395,38 @@ def main():
             start_at_yellow()
         else:
             phase_1_find_box()
-        state.destination, state.bay = go_in_for_the_box_readqr()
+        try:
+            state.destination, state.bay = go_in_for_the_box_readqr()
+        except:
+            crashed()
+            break
         route = path_find(state.loc, state.destination)
-        route = execute_travel(route)
-        count_unload_return()
-        return_to_color(route)
+        try:
+            route = execute_travel(route)
+            count_unload_return()
+            return_to_color(route)
+        except:
+            crashed()
+            break
+        
         
 
     for p in range(90):
-        phase_2_detect_boxes()
-        state.destination, state.bay = go_in_for_the_box_readqr()
-        route = path_find(state.loc, state.destination)
-        route = execute_travel(route)
-        count_unload_return()
-        return_to_color(route)
+        try:
+            phase_2_detect_boxes()
+        except:
+            crashed()
+            break
+        try:
+            state.destination, state.bay = go_in_for_the_box_readqr()
+        except:
+            crashed()
+            break
+        try:
+            route = path_find(state.loc, state.destination)
+            route = execute_travel(route)
+            count_unload_return()
+            return_to_color(route)
+        except:
+            crashed()
+            break
