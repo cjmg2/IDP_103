@@ -1,11 +1,16 @@
 import Box_Collection
 import Line_Following
+import Button
+import Global_Variables as gv
 
 SMALL = 5/20
-TEMP_BLIND = 4/20
+CLOCK_SMALL = 4/20
+TEMP_BLIND = 9/20
 OUT_OF_HOME = 20/20
 OUT_OF_BAY = 10/20
 STEP_FWD = 40
+TINY_QR_FWD = 1/20
+OUT_OF_COLORED_BAYS = 10/20
 
 connections = {
     "Home": {"Yellow": 270, "Green": 90},
@@ -107,11 +112,15 @@ def path_find(start, dest):
 def fwd_until_junc():
     Line_Following.line_following(pickup=False, dropoff=False)
 
-def clockwise():
+def clockwise(complete=False):
     Line_Following.turn_clockwise()
+    if complete == False:
+        Line_Following.blind_forward(CLOCK_SMALL)
 
-def anticlockwise():
+def anticlockwise(complete=False):
     Line_Following.turn_anticlockwise()
+    if complete == False:
+        Line_Following.blind_forward(CLOCK_SMALL)
 
 def load_fork():
     Box_Collection.lift_block()
@@ -186,7 +195,7 @@ def execute_travel(route):
     while route:
         current_node = next_node
         next_node = route.pop(0)
-        # print(current_node, next_node)
+        print(current_node, next_node)
         wanted_orien = connections[current_node][next_node]
         #clockwise is positive
         turn_angle = wanted_orien - state.orien
@@ -197,7 +206,7 @@ def execute_travel(route):
             anticlockwise()
             state.orien = (state.orien - 90) % 360
         elif turn_angle == 180 or turn_angle == -180:
-            clockwise()
+            clockwise(complete = True)
             clockwise()
             state.orien = (state.orien + 180) % 360
         if {current_node, next_node} in [{"Red", "L_orange"}, {"Blue", "L_purple"}] and not destination in ["L_purple", "L_orange"]:
@@ -258,17 +267,23 @@ def go_in_for_the_box_readqr():
     with the bot facing the box, go straight in for the box, scan the qr code, lift the box, and move back to initial position
     """
     fwd(SMALL)
-    text = Line_Following.line_following(pickup=True)
+    text = None
+    counter = 0
+    while text == None and counter < 10:
+        counter += 1
+        text = Box_Collection.get_qr_code()
+        Line_Following.blind_forward(TINY_QR_FWD)
+    Line_Following.line_following()
     destination, bay = parse_qr(text)
     Line_Following.blind_forward(TEMP_BLIND)
     load_fork()
     if state.loc == "Red" or state.loc == "Yellow":
-        clockwise()
+        clockwise(complete = True)
         clockwise()
     elif state.loc == "Blue" or state.loc == "Green":
+        anticlockwise(complete = True)
         anticlockwise()
-        anticlockwise()
-
+    Line_Following.blind_forward(OUT_OF_COLORED_BAYS)
     fwd_until_junc()
     state.orien = 180
     state.remaining_boxes.remove(state.loc)
@@ -323,7 +338,7 @@ def turn_unload_return(bay):
     unload_fork()
 
     rvs(OUT_OF_BAY)
-    clockwise()
+    clockwise(complete = True)
     clockwise()
     fwd_until_junc()
     if state.destination == "U_purple" or state.destination == "L_orange":
@@ -358,6 +373,12 @@ def main():
     Runs the entire program, telling the robot to do phase 1 (boxes in all 4 bays)
     then phase 2 (boxes only added one by one to a random loading bay)
     """
+    
+    gv.rmotor.off()
+    gv.lmotor.off()
+
+    Button.button_to_start()
+    
     Box_Collection.initialise_servo()
 
     for q in range(4):

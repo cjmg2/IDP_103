@@ -42,7 +42,7 @@ def calc_control_signal(error, prev_error, prev_integrator, prev_differentiator,
 
 def motor_control(measurement_list):
     """"This function controls motors proportionally to the control signal"""
-
+    #print(measurement_list)
     #k = 8
     #if control_signal < 0:
     #    gv.lmotor.Forward(k*control_signal)
@@ -55,38 +55,36 @@ def motor_control(measurement_list):
     #else:
     #    gv.rmotor.Forward()
     #    gv.lmotor.Forward()
-    if measurement_list == [0, 1, 1, 0]:
+    if measurement_list == [0, 1, 1, 0] or measurement_list == [0, 0, 0, 0]:
         gv.rmotor.Forward(100)
         gv.lmotor.Forward(100)
         return "not at junction"
     if measurement_list == [1, 0, 0, 0]:
         gv.rmotor.Forward(100)
-        gv.lmotor.Forward(50)
+        gv.lmotor.Forward(40)
         return "not at junction"
     if measurement_list == [0, 1, 0, 0]:
         gv.rmotor.Forward(100)
-        gv.lmotor.Forward(75)
+        gv.lmotor.Forward(60)
         return "not at junction"
     if measurement_list == [0, 0, 1, 0]:
-        gv.rmotor.Forward(75)
+        gv.rmotor.Forward(60)
         gv.lmotor.Forward(100)
         return "not at junction"
     if measurement_list == [0, 0, 0, 1]:
-        gv.rmotor.Forward(50)
+        gv.rmotor.Forward(40)
         gv.lmotor.Forward(100)
         return "not at junction"
-    if measurement_list == [0, 0, 1, 1] or measurement_list == [0, 1, 1, 1] or measurement_list == [1, 1, 1, 1]:
+    if measurement_list == [0, 1, 1, 1] or measurement_list == [1, 1, 1, 1]:
         gv.rmotor.off()
         gv.lmotor.off()
         #print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
         return "at junction"
-    if measurement_list == [1, 1, 0, 0] or measurement_list == [1, 1, 1, 0] or measurement_list == [1, 1, 1, 1]:
+    if measurement_list == [1, 1, 1, 0] or measurement_list == [1, 1, 1, 1]:
         gv.rmotor.off()
         gv.lmotor.off()
         #print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
         return "at junction"
-    else:
-        pass
 
 def detect_L_turn(measurement_list):
     """"This function detects if there is a left turn"""
@@ -125,6 +123,7 @@ def line_following(pickup = False, dropoff = False):
     qr_code_detected = False
 
     while state == "not at junction":
+        time.sleep(0.05)
         measurement_list = get_measurement_list()
         #weighted_measurement_list = weight_measurement_list(measurement_list)
         #error = calc_error(weighted_measurement_list)
@@ -138,23 +137,20 @@ def line_following(pickup = False, dropoff = False):
         state = motor_control(measurement_list)
         #detect_R_turn(measurement_list)
         #detect_L_turn(measurement_list) # Do not need a detect T junction
-        print(state)
-        time.sleep(0.1)
-
+        #print(state)
         if dropoff == True:
             detect_dropoff(measurement_list)
         
-        if pickup == True:
-            gv.qr_enable.value(1)
-            if qr_code_detected == False:
-                qr_code = bc.get_qr_code()
-                if qr_code is not None:
-                    qr_code_detected = True
+        #if pickup == True:
+            
+        #    if qr_code_detected == False:
+        #        qr_code = bc.get_qr_code()
+        #        if qr_code is not None:
+        #            qr_code_detected = True
             #bc.detect_box()
     
-    if pickup == True:
-        gv.qr_enable.value(0)
-        return qr_code
+    #if pickup == True and qr_code_detected == True:
+     #   return qr_code
 
 def turn_clockwise():
     """"This function turns the robot 90 degrees clockwise"""
@@ -163,7 +159,7 @@ def turn_clockwise():
     gv.lmotor.off()
     gv.rmotor.Reverse(100)
     gv.lmotor.Forward(100)
-    time.sleep(0.7)
+    time.sleep(0.65)
     gv.rmotor.off()
     gv.lmotor.off()
 
@@ -174,7 +170,7 @@ def turn_anticlockwise():
     gv.lmotor.off()
     gv.rmotor.Forward(100)
     gv.lmotor.Reverse(100)
-    time.sleep(0.7)
+    time.sleep(0.65)
     gv.rmotor.off()
     gv.lmotor.off()
 
