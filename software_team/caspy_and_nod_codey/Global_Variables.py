@@ -62,3 +62,6 @@ tmf8701.start_measurement(calib_m = tof.eMODE_NO_CALIB, mode = tof.eCOMBINE)
 
 global junc_counter
 junc_counter = 0
+
+global box_status
+box_status = "No Box"

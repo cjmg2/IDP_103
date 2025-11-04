@@ -2,6 +2,7 @@ from machine import Pin, PWM
 import time
 import Box_Collection as bc
 import Global_Variables as gv
+import Button
 
 def get_measurement_list():
     """"This function returns a list of light sensor reading"""
@@ -162,6 +163,8 @@ def line_following(pickup = False, dropoff = False, blind=False, blind_time=0):
         prev_differentiator = results[2]
         
         state = junc_detection(measurement_list)
+
+        Button.button_interupt()
         
         end_time = time.time_ns()
         
@@ -180,17 +183,20 @@ def line_following(pickup = False, dropoff = False, blind=False, blind_time=0):
             time_remaining = time_remaining - time_elapsed
             if time_remaining < 0:
                 state = "blind finished"
+
+        if pickup == True:
+            bc.detect_box()
+        if pickup == False:
+            gv.box_status = bc.box_still_on()
         
     gv.rmotor.off()
     gv.lmotor.off()
         
-        #if pickup == True:
             
         #    if qr_code_detected == False:
         #        qr_code = bc.get_qr_code()
         #        if qr_code is not None:
         #            qr_code_detected = True
-            #bc.detect_box()
     
     #if pickup == True and qr_code_detected == True:
      #   return qr_code
