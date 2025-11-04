@@ -12,6 +12,7 @@ OUT_OF_BAY = 10/20
 STEP_FWD = 40
 TINY_QR_FWD = 1/20
 OUT_OF_COLORED_BAYS = 10/20
+FWD_HOME = 20/20
 
 connections = {
     "Home": {"Yellow": 270, "Green": 90},
@@ -59,6 +60,7 @@ class State:
         self.bay = None
         self.remaining_boxes = ["Red", "Blue", "Green", "Yellow"]
         self.phase = 1
+        self.q = 0
         
 
 global state
@@ -68,6 +70,8 @@ def crashed(phase):
     state.loc = "Home"
     state.orien = 180
     state.phase = phase
+    state.q = 0
+
 
 def mini_path_find(start, dest, min_max):
     """
@@ -276,6 +280,34 @@ def phase_1_find_box():
             clockwise()
     else:
         raise Exception("error sth, elifs ran out")
+    
+def GO_HOME():
+    """
+    starting at either Red or Blue pointing to 0 degrees, make the robot go to the nearest bay with a box and turn to face the box
+    """
+    if state.loc == "Red":
+        i = 0
+        clockwise()
+        while i<2:
+            fwd_until_junc()
+            fwd(SMALL)
+            i += 1
+        anticlockwise()
+        fwd_until_junc()
+        fwd(FWD_HOME)
+
+    elif state.loc == "Blue":
+        i = 0
+        anticlockwise()
+        while i<2:
+            fwd_until_junc()
+            fwd(SMALL)
+            i += 1
+        clockwise()
+        fwd_until_junc()
+        fwd(FWD_HOME)
+    else:
+        raise Exception("error sth, elifs ran out")
 
 def go_in_for_the_box_readqr():
     """
@@ -375,16 +407,50 @@ def start_at_yellow():
     """
     Instructs the robot to move from home to yellow, the first loading bay
     """
-
-    fwd_until_junc()
-    gv.led_enable.value(1)
-    fwd(SMALL)
-    fwd_until_junc()
-    clockwise()
-    fwd_until_junc()
-    clockwise()
-    state.loc = "Yellow"
-    state.orien = 0
+    if "Yellow" in state.remaining_boxes():
+        fwd_until_junc()
+        gv.led_enable.value(1)
+        fwd(SMALL)
+        fwd_until_junc()
+        clockwise()
+        fwd_until_junc()
+        clockwise()
+        state.loc = "Yellow"
+        state.orien = 0
+    elif "Red" in state.remaining_boxes():
+        fwd_until_junc()
+        gv.led_enable.value(1)
+        fwd(SMALL)
+        fwd_until_junc()
+        clockwise()
+        fwd_until_junc()
+        fwd(SMALL)
+        fwd_until_junc()
+        clockwise()
+        state.loc = "Red"
+        state.orien = 0
+    elif "Green" in state.remaining_boxes():
+        fwd_until_junc()
+        gv.led_enable.value(1)
+        fwd(SMALL)
+        fwd_until_junc()
+        anticlockwise()
+        fwd_until_junc()
+        anticlockwise()
+        state.loc = "Green"
+        state.orien = 0
+    elif "Blue" in state.remaining_boxes():
+        fwd_until_junc()
+        gv.led_enable.value(1)
+        fwd(SMALL)
+        fwd_until_junc()
+        anticlockwise()
+        fwd_until_junc()
+        fwd(SMALL)
+        fwd_until_junc()
+        anticlockwise()
+        state.loc = "Blue"
+        state.orien = 0
 
 
 def main():
@@ -392,51 +458,56 @@ def main():
     Runs the entire program, telling the robot to do phase 1 (boxes in all 4 bays)
     then phase 2 (boxes only added one by one to a random loading bay)
     """
-    
-    gv.rmotor.off()
-    gv.lmotor.off()
-
-    Button.button_to_start()
-    
-    Box_Collection.initialise_servo()
-
-    for q in range(4):
-        if q == 0:
-            start_at_yellow()
-        else:
-            phase_1_find_box()
-        try:
-            state.destination, state.bay = go_in_for_the_box_readqr()
-        except:
-            crashed()
-            break
-        route = path_find(state.loc, state.destination)
-        try:
-            route = execute_travel(route)
-            count_unload_return()
-            return_to_color(route)
-        except:
-            crashed()
-            break
+    while True:
+        HOMIE = 1
+        gv.rmotor.off()
+        gv.lmotor.off()
+        state.q = 0
+        Button.button_to_start()
         
-        
-
-    for p in range(90):
-        try:
-            phase_2_detect_boxes()
-        except:
-            crashed()
-            break
-        try:
-            state.destination, state.bay = go_in_for_the_box_readqr()
-        except:
-            crashed()
-            break
-        try:
+        Box_Collection.initialise_servo()
+        while not state.remaining_boxes.empty():
+            if state.q == 0:
+                start_at_yellow()
+                state.q = 1
+            else:
+                phase_1_find_box()
+            try:
+                state.destination, state.bay = go_in_for_the_box_readqr()
+            except:
+                crashed()
+                HOMIE = 0
+                break
             route = path_find(state.loc, state.destination)
-            route = execute_travel(route)
-            count_unload_return()
-            return_to_color(route)
-        except:
-            crashed()
-            break
+            try:
+                route = execute_travel(route)
+                count_unload_return()
+                return_to_color(route)
+            except:
+                crashed()
+                HOMIE = 0
+                break
+        if HOMIE == 1:
+            GO_HOME()
+            return 0
+    
+
+    # for p in range(90):
+    #     try:
+    #         phase_2_detect_boxes()
+    #     except:
+    #         crashed()
+    #         break
+    #     try:
+    #         state.destination, state.bay = go_in_for_the_box_readqr()
+    #     except:
+    #         crashed()
+    #         break
+    #     try:
+    #         route = path_find(state.loc, state.destination)
+    #         route = execute_travel(route)
+    #         count_unload_return()
+    #         return_to_color(route)
+    #     except:
+    #         crashed()
+    #         break
