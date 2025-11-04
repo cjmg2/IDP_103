@@ -31,13 +31,13 @@ connections = {
     }
 
 path_det = {
-    "L_orange": 2,
-    "Blue": 3,
-    "Green": 4,
     "Home": 5,
     "Yellow": 6,
+    "Green": 4,
     "Red": 7,
+    "Blue": 3,
     "L_purple": 8,
+    "L_orange": 2,
     "Ramp": None
 }
 
