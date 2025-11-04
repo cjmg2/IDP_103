@@ -1,5 +1,6 @@
 from Classes import Motor
 from machine import Pin, PWM, I2C
+from libs.tiny_code_reader.tiny_code_reader import TinyCodeReader
 
 global rmotor 
 rmotor = Motor(7, 6)
@@ -38,8 +39,12 @@ led_enable = Pin(10, Pin.OUT)
 
 #define TOF sensors
 global i2c_bus_0
-i2c_bus_0 = I2C(id=1, scl=Pin(9), sda=Pin(8), freq=400000)
+i2c_bus_0 = I2C(id=0, scl=Pin(9), sda=Pin(8), freq=400000)
 
-#define ultrasonic
+#define qr code reader
 global i2c_bus_1
 i2c_bus_1 = I2C(id=1, scl=Pin(19), sda=Pin(18), freq=400000)
+
+
+global tiny_code_reader
+tiny_code_reader = TinyCodeReader(i2c_bus_1)
