@@ -38,6 +38,9 @@ def lower_onto_rack():
 
 def lift_block():
     change_height(14.5)
+    
+def travel_position():
+    change_height(10)
 
 
 
