@@ -2,6 +2,7 @@ from machine import Pin, PWM, SoftI2C, I2C
 from utime import sleep
 import Global_Variables as gv
 from libs.tiny_code_reader.tiny_code_reader import TinyCodeReader
+from libs.DFRobot_TMF8x01.DFRobot_TMF8x01 import DFRobot_TMF8801, DFRobot_TMF8701
 
 """def get_servo_angle():
    """"""reads the analogue feedback of the servo to get the current angle""""""

@@ -4,7 +4,7 @@ import Button
 import Global_Variables as gv
 import time
 
-SMALL = 3/20
+SMALL = 8/20
 CLOCK_SMALL = 4/20
 TEMP_BLIND = 9/20
 OUT_OF_HOME = 20/20

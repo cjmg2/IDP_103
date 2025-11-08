@@ -30,7 +30,7 @@ def calc_error(weighted_measurement_list, setpoint=0):
         measurement = None
     return measurement
 
-def calc_control_signal(error, prev_error, prev_integrator, prev_differentiator, Kp=40, Ki=0, Kd=0.1, tau=0.0005, T=0.05):
+def calc_control_signal(error, prev_error, prev_integrator, prev_differentiator, Kp=20, Ki=0, Kd=0, tau=0.0005, T=0.05):
     """"This function calculates the control signal using a PID controller"""
 
     # To adjust first adjust Kp. Then adjust Ki. Then adjust Kd. If too much noise when Kd adjusted then adjust tau for more smoothing
@@ -50,16 +50,17 @@ def motor_control(control_signal):
     """"This function controls motors proportionally to the control signal"""
     #print(measurement_list)
     k = 1
+    speed = 50
     if control_signal < 0:
-        gv.lmotor.Forward(75 + k*control_signal)
-        gv.rmotor.Forward(75 - k*control_signal)
+        gv.lmotor.Forward(speed + k*control_signal)
+        gv.rmotor.Forward(speed - k*control_signal)
 
     elif control_signal > 0:
-        gv.rmotor.Forward(75 - k*control_signal)
-        gv.lmotor.Forward(75 + k*control_signal)
+        gv.rmotor.Forward(speed - k*control_signal)
+        gv.lmotor.Forward(speed + k*control_signal)
     else:
-        gv.lmotor.Forward(75)
-        gv.rmotor.Forward(75)
+        gv.lmotor.Forward(speed)
+        gv.rmotor.Forward(speed)
 
     #else:
     #    gv.rmotor.Forward()
@@ -146,7 +147,6 @@ def line_following(pickup = False, dropoff = False, blind=False, blind_time=0):
     
     while state == "not at junction":
         start_time = time.time_ns()
-        time.sleep(0.05)
         measurement_list = get_measurement_list()
         counter += 1
         #print(measurement_list)
@@ -166,17 +166,19 @@ def line_following(pickup = False, dropoff = False, blind=False, blind_time=0):
 
         Button.button_interupt()
         
+        motor_control(control_signal)
+
+        time.sleep(0.05)
+
         end_time = time.time_ns()
         
         #print(control_signal)
 
-        motor_control(control_signal)
         #detect_R_turn(measurement_list)
         #detect_L_turn(measurement_list) # Do not need a detect T junction
         #print(state)
         #if dropoff == True:
-         #   detect_dropoff(measurement_list)
-        
+         #   detect_dropoff(measurement_list)   
         
         if blind == True:
             time_elapsed = end_time - start_time
@@ -244,3 +246,11 @@ def blind_reverse(distance_wanted):
     time.sleep(distance_wanted) # 1s goes to 18cm
     gv.rmotor.off()
     gv.lmotor.off()
+
+def slow_to_stop():
+    """This function makes the robot slow from a speed of 50 to 0"""
+    speed = 50
+    for i in range(50):
+        gv.rmotor.Forward(speed-1)
+        gv.lmotor.Forward(speed-1)
+        time.sleep(0.001)
